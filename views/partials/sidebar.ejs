@@ -1,0 +1,20 @@
+<div class="sidebar">
+    <div class="profile">
+        <img alt="Admin profile picture" height="50" src="https://storage.googleapis.com/a1aa/image/KUj1MjjwLPLjJxOFjEQSPmY03KnkXnfReeKqSkGcqBoytF1nA.jpg" width="50"/>
+        <span><%- user?.name || "Tamu" -%></span>
+    </div>
+    <ul class="menu">
+        <%if(locals.user){ %>
+            <li><a class="<%= title == 'Dashboard' ? 'active' : '' %>" href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a class="<%= title == 'Data Transaksi' ? 'active' : '' %>" href="/data-transaksi"><i class="fas fa-exchange-alt"></i> Data Transaksi</a></li>
+            <li><a class="<%= title == 'Data Pelanggan' ? 'active' : '' %>" href="/data-pelanggan"><i class="fas fa-users"></i> Data Pelanggan</a></li>
+            <li><a class="<%= title == 'Data Menu' ? 'active' : '' %>" href="/data-menu"><i class="fas fa-utensils"></i> Data Menu</a></li>
+            <li><a class="<%= title == 'Data Karyawan' ? 'active' : '' %>" href="/data-karyawan"><i class="fas fa-user-tie"></i> Data Karyawan</a></li>
+            <li><a class="<%= title == 'Keluar' ? 'active' : '' %>" href="/logout"><i class="fas fa-door-closed"></i> Keluar</a></li>
+        <% } %>
+        <li><a class="<%= title == 'Transaksi' ? 'active' : '' %>" href="/transaksi"><i class="fas fa-cash-register"></i> Transaksi</a></li>
+        <%if(!locals.user){ %>
+            <li><a class="<%= title == 'Login' ? 'active' : '' %>" href="/logout"><i class="fas fa-door-open"></i> Login</a></li>
+        <% } %>
+    </ul>
+</div>

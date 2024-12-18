@@ -1,0 +1,394 @@
+<html>
+ <head>
+  <title>
+   Menu Page
+  </title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .sidebar {
+            width: 35%;
+            background-color: #f8d7a1;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar h2 {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .sidebar .customer-section, .sidebar .order-section {
+            background-color: #fff3e0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .sidebar .customer-section img, .sidebar .order-section img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .sidebar .customer-section button, .sidebar .order-section button {
+            width: 48%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .sidebar .customer-section button:first-child {
+            background-color: #f8d7a1;
+            margin-right: 4%;
+        }
+        .sidebar .customer-section button:last-child {
+            background-color: #f8d7a1;
+        }
+        .sidebar .order-section .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .sidebar .order-section .order-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .sidebar .order-section .order-item .order-details {
+            flex-grow: 1;
+        }
+        .sidebar .order-section .order-item .order-details p {
+            margin: 0;
+        }
+        .sidebar .order-section .order-item .order-details .quantity {
+            display: flex;
+            align-items: center;
+        }
+        .sidebar .order-section .order-item .order-details .quantity button {
+            background-color: #f8d7a1;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .sidebar .order-section .order-item .order-details .quantity input {
+            width: 30px;
+            text-align: center;
+            border: none;
+            background-color: #fff3e0;
+            margin: 0 5px;
+        }
+        .sidebar .order-section .total {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .sidebar .order-section .checkout {
+            width: 100%;
+            padding: 10px;
+            background-color: #f8d7a1;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .main-content {
+            width: 55%;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .main-content .search-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .main-content .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-size: 1em;
+        }
+        .main-content .search-bar i {
+            margin-left: -30px;
+            cursor: pointer;
+        }
+        .main-content .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        .main-content .menu-item {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .main-content .menu-item img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .main-content .menu-item button {
+            background-color: #f8d7a1;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .nav-bar {
+            width: 15%;
+            background-color: #f8d7a1;
+            display: flex;
+            flex-direction: column; /* Membuat elemen diatur secara vertikal */
+            align-items: center;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s;
+            position: relative;
+        }
+
+        .nav-bar.collapsed {
+            width: 60px;
+        }
+
+        .nav-bar i {
+            font-size: 2em;
+            margin-bottom: 20px; /* Jarak antar ikon */
+            cursor: pointer;
+        }
+
+        .nav-bar .toggle-btn {
+            margin-bottom: 20px; /* Tetap dalam aliran flexbox */
+            position: static; /* Mengikuti tata letak flexbox */
+        }
+  </style>
+ </head>
+ <body>
+  <div class="sidebar">
+   <h2>
+    Pelanggan kita kah?
+   </h2>
+   <div class="customer-section">
+    <img alt="Customer Image" height="300" src="https://storage.googleapis.com/a1aa/image/byhjF4LaG5qsON52otvsH5jzs0Y3elirOfPV01RYxIpOgb6TA.jpg" width="300"/>
+    <button>
+     Dikenali
+    </button>
+    <button>
+     tambah data
+    </button>
+   </div>
+   <h2>
+    Pesanan:
+   </h2>
+   <div class="order-section">
+    <div class="order-item">
+     <img alt="Cappucino" height="50" src="https://storage.googleapis.com/a1aa/image/Nr6DhR3iAfUSDKNQBY9evHGelyl7IVk8fEnVR4exNnVcBcTfE.jpg" width="50"/>
+     <div class="order-details">
+      <p>
+       Cappucino
+      </p>
+      <div class="quantity">
+       <button style="width: 10%;">
+        -
+       </button>
+       <input type="text" value="1"/>
+       <button style="width: 10%;">
+        +
+       </button>
+      </div>
+     </div>
+     <p>
+      Rp. 25.000
+     </p>
+    </div>
+    <div class="order-item">
+     <img alt="Es Kopi Susu" height="50" src="https://storage.googleapis.com/a1aa/image/1EhAP8XFXkaKPFTYeI2SJhWpWPVRRJayLH5L9V05f5qRgb6TA.jpg" width="50"/>
+     <div class="order-details">
+      <p>
+       Es Kopi Susu
+      </p>
+      <div class="quantity">
+       <button style="width: 10%;">
+        -
+       </button>
+       <input type="text" value="2"/>
+       <button style="width: 10%;">
+        +
+       </button>
+      </div>
+     </div>
+     <p>
+      Rp. 46.000
+     </p>
+    </div>
+    <div class="order-item">
+     <img alt="Mint Tea" height="50" src="https://storage.googleapis.com/a1aa/image/eOLGw3NZeNqwC0H2w21SEmwfASsZCVG2qFRe8Lsw3IjBBupPB.jpg" width="50"/>
+     <div class="order-details">
+      <p>
+       Mint Tea
+      </p>
+      <div class="quantity">
+       <button style="width: 10%;">
+        -
+       </button>
+       <input type="text" value="1"/>
+       <button style="width: 10%;">
+        +
+       </button>
+      </div>
+     </div>
+     <p>
+      Rp. 17.000
+     </p>
+    </div>
+    <p class="total">
+     Total yang harus dibayar: Rp. xx.xxx
+    </p>
+    <button class="checkout">
+     ok bungkus!
+    </button>
+   </div>
+  </div>
+  <div class="main-content">
+   <div class="search-bar">
+    <input placeholder="cari menu" type="text"/>
+    <i class="fas fa-search">
+    </i>
+   </div>
+   <div class="menu-grid">
+    <div class="menu-item">
+     <img alt="Cappucino" height="150" src="https://storage.googleapis.com/a1aa/image/Nr6DhR3iAfUSDKNQBY9evHGelyl7IVk8fEnVR4exNnVcBcTfE.jpg" width="150"/>
+     <p>
+      Cappucino
+     </p>
+     <p>
+      Rp.25.000
+     </p>
+     <button>
+      +
+     </button>
+    </div>
+    <div class="menu-item">
+     <img alt="Japanese Drip" height="150" src="https://storage.googleapis.com/a1aa/image/o4y757ewfgvZ3Edzo9ZtXqHeDqyEfbZKvBNaTUJPrrsUAupPB.jpg" width="150"/>
+     <p>
+      Japanese Drip
+     </p>
+     <p>
+      Rp.17.000
+     </p>
+     <button>
+      +
+     </button>
+    </div>
+    <div class="menu-item">
+     <img alt="Es Kopi Susu" height="150" src="https://storage.googleapis.com/a1aa/image/1EhAP8XFXkaKPFTYeI2SJhWpWPVRRJayLH5L9V05f5qRgb6TA.jpg" width="150"/>
+     <p>
+      Es Kopi Susu
+     </p>
+     <p>
+      Rp.23.000
+     </p>
+     <button>
+      +
+     </button>
+    </div>
+    <div class="menu-item">
+     <img alt="Hot Matcha" height="150" src="https://storage.googleapis.com/a1aa/image/t9fpRphmOmTGZSM8bpmBszvPt7M6ZkSEAdu6fq9JNdJDgb6TA.jpg" width="150"/>
+     <p>
+      Hot Matcha
+     </p>
+     <p>
+      Rp.20.000
+     </p>
+     <button>
+      +
+     </button>
+    </div>
+    <div class="menu-item">
+     <img alt="Mint Tea" height="150" src="https://storage.googleapis.com/a1aa/image/eOLGw3NZeNqwC0H2w21SEmwfASsZCVG2qFRe8Lsw3IjBBupPB.jpg" width="150"/>
+     <p>
+      Mint Tea
+     </p>
+     <p>
+      Rp.17.000
+     </p>
+     <button>
+      +
+     </button>
+    </div>
+    <div class="menu-item">
+     <img alt="Oreo Milkshake" height="150" src="https://storage.googleapis.com/a1aa/image/UYn1tnYR2lYyGd9FqwZyzqdItj84O2UN7PmiguDkYzKD4meJA.jpg" width="150"/>
+     <p>
+      Oreo Milkshake
+     </p>
+     <p>
+      Rp.25.000
+     </p>
+     <button>
+      +
+     </button>
+    </div>
+    <div class="menu-item">
+     <img alt="Strawberry Mojito" height="150" src="https://storage.googleapis.com/a1aa/image/6mb3TQMqjv6UDBBtf7Kcex9V0FqRgSkxcPE3SNT2hviKgb6TA.jpg" width="150"/>
+     <p>
+      Strawberry Mojito
+     </p>
+     <p>
+      Rp.18.000
+     </p>
+     <button>
+      +
+     </button>
+    </div>
+    <div class="menu-item">
+     <img alt="Sweet Coffee Cream" height="150" src="https://storage.googleapis.com/a1aa/image/134Dvav2Gk7RF163woq9ajTXR9BmLQIioUngdXedvOkEwN9JA.jpg" width="150"/>
+     <p>
+      Sweet Coffee Cream
+     </p>
+     <p>
+      Rp.20.000
+     </p>
+     <button>
+      +
+     </button>
+    </div>
+    <div class="menu-item">
+     <img alt="Roti Bakar Butter" height="150" src="https://storage.googleapis.com/a1aa/image/CvDWow0XgsI6LRq9VDPLxFVG9DgFD6X01TMBP9ouGSeDwN9JA.jpg" width="150"/>
+     <p>
+      Roti Bakar Butter
+     </p>
+     <p>
+      Rp.15.000
+     </p>
+     <button>
+      +
+     </button>
+    </div>
+   </div>
+  </div>
+  <div class="nav-bar collapsed" id="navBar" style="display: flex; flex-direction: column; align-items: center;">
+   <i class="fas fa-bars toggle-btn" onclick="toggleNavBar()">
+   </i>
+   <i class="fas fa-user">
+   </i>
+  </div>
+  <script>
+   function toggleNavBar() {
+            var navBar = document.getElementById('navBar');
+            navBar.classList.toggle('collapsed');
+        }
+  </script>
+ </body>
+</html>

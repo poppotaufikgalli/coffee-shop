@@ -1,0 +1,389 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Data Pelanggan
+  </title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f8e8c1;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar .profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .sidebar .profile img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .sidebar .profile span {
+            font-weight: 500;
+        }
+        .sidebar nav a {
+            display: block;
+            padding: 10px 0;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .sidebar nav a.active {
+            background-color: #f4b860;
+            color: #fff;
+            border-radius: 5px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .main-content .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .main-content .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #8b5e34;
+        }
+        .main-content .header button {
+            background-color: #f4b860;
+            border: none;
+            padding: 10px 20px;
+            color: #fff;
+            font-weight: 500;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .main-content .header button i {
+            margin-right: 5px;
+        }
+        .table-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table thead th {
+            text-align: left;
+            padding: 10px;
+            background-color: #f5f5f5;
+            font-weight: 500;
+        }
+        table tbody td {
+            padding: 10px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        table tbody td img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        table tbody td .actions {
+            display: flex;
+            gap: 10px;
+        }
+        table tbody td .actions button {
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table tbody td .actions .edit {
+            background-color: #4a90e2;
+            color: #fff;
+        }
+        table tbody td .actions .delete {
+            background-color: #e94e77;
+            color: #fff;
+        }
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .pagination .info {
+            font-size: 14px;
+            color: #666;
+        }
+        .pagination .controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pagination .controls select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .pagination .controls .pages {
+            display: flex;
+            gap: 5px;
+        }
+        .pagination .controls .pages button {
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f4b860;
+            color: #fff;
+        }
+        .pagination .controls .pages button.active {
+            background-color: #8b5e34;
+        }
+  </style>
+ </head>
+ <body>
+  <div class="sidebar">
+   <div class="profile">
+    <img alt="Profile picture" height="40" src="https://storage.googleapis.com/a1aa/image/AeAaHe8x38vf1onyeO3wmuneoqaa3uCtyVDbp2x52jHJezoeJA.jpg" width="40"/>
+    <span>
+     Admin
+    </span>
+   </div>
+   <nav>
+    <a href="#">
+     Dashboard
+    </a>
+    <a href="#">
+     Data Transaksi
+    </a>
+    <a class="active" href="#">
+     Data Pelanggan
+    </a>
+    <a href="#">
+     Data Menu
+    </a>
+    <a href="#">
+     Data Karyawan
+    </a>
+   </nav>
+  </div>
+  <div class="main-content">
+   <div class="header">
+    <h1>
+     Data Pelanggan
+    </h1>
+    <button>
+     <i class="fas fa-plus">
+     </i>
+     ADD NEW
+    </button>
+   </div>
+   <div class="table-container">
+    <table>
+     <thead>
+      <tr>
+       <th>
+        <input type="checkbox"/>
+       </th>
+       <th>
+        id pelanggan
+        <i class="fas fa-sort">
+        </i>
+       </th>
+       <th>
+        nama pelanggan
+       </th>
+       <th>
+        Foto Pelanggan
+       </th>
+       <th>
+        tgl kunjungan
+       </th>
+       <th>
+        klasifikasi
+       </th>
+       <th>
+        Action
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        <input type="checkbox"/>
+       </td>
+       <td>
+        id pelanggan
+       </td>
+       <td>
+        nama pelanggan
+       </td>
+       <td>
+        <img alt="Customer photo" height="40" src="https://storage.googleapis.com/a1aa/image/dYADPMLldA52G1h69xVmPekqLfcXrcxYcpH5202KmgryPj6TA.jpg" width="40"/>
+       </td>
+       <td>
+        XXXX
+       </td>
+       <td>
+        sangat loyal
+       </td>
+       <td class="actions">
+        <button class="edit">
+         <i class="fas fa-edit">
+         </i>
+        </button>
+        <button class="delete">
+         <i class="fas fa-trash">
+         </i>
+        </button>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <input type="checkbox"/>
+       </td>
+       <td>
+        id pelanggan
+       </td>
+       <td>
+        nama pelanggan
+       </td>
+       <td>
+        <img alt="Customer photo" height="40" src="https://storage.googleapis.com/a1aa/image/dYADPMLldA52G1h69xVmPekqLfcXrcxYcpH5202KmgryPj6TA.jpg" width="40"/>
+       </td>
+       <td>
+        XXXX
+       </td>
+       <td>
+        loyal
+       </td>
+       <td class="actions">
+        <button class="edit">
+         <i class="fas fa-edit">
+         </i>
+        </button>
+        <button class="delete">
+         <i class="fas fa-trash">
+         </i>
+        </button>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <input type="checkbox"/>
+       </td>
+       <td>
+        id pelanggan
+       </td>
+       <td>
+        nama pelanggan
+       </td>
+       <td>
+        <img alt="Customer photo" height="40" src="https://storage.googleapis.com/a1aa/image/dYADPMLldA52G1h69xVmPekqLfcXrcxYcpH5202KmgryPj6TA.jpg" width="40"/>
+       </td>
+       <td>
+        XXXX
+       </td>
+       <td>
+        tetap
+       </td>
+       <td class="actions">
+        <button class="edit">
+         <i class="fas fa-edit">
+         </i>
+        </button>
+        <button class="delete">
+         <i class="fas fa-trash">
+         </i>
+        </button>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <input type="checkbox"/>
+       </td>
+       <td>
+        id pelanggan
+       </td>
+       <td>
+        nama pelanggan
+       </td>
+       <td>
+        <img alt="Customer photo" height="40" src="https://storage.googleapis.com/a1aa/image/dYADPMLldA52G1h69xVmPekqLfcXrcxYcpH5202KmgryPj6TA.jpg" width="40"/>
+       </td>
+       <td>
+        XXXX
+       </td>
+       <td>
+        baru
+       </td>
+       <td class="actions">
+        <button class="edit">
+         <i class="fas fa-edit">
+         </i>
+        </button>
+        <button class="delete">
+         <i class="fas fa-trash">
+         </i>
+        </button>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <div class="pagination">
+     <div class="info">
+      Showing 1 to 10 of 50 entries
+     </div>
+     <div class="controls">
+      <select>
+       <option value="10">
+        10
+       </option>
+       <option value="25">
+        25
+       </option>
+       <option value="50">
+        50
+       </option>
+       <option value="100">
+        100
+       </option>
+      </select>
+      <div class="pages">
+       <button>
+        1
+       </button>
+       <button class="active">
+        2
+       </button>
+       <button>
+        3
+       </button>
+       <button>
+        4
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

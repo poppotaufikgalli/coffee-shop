@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/styles.css" /> 
+    <title>Face Registration</title>
+    
+</head>
+<body>
+    <h1>Face Registration</h1>
+    <div id="main-container">
+        <form id="registrationForm" action="/upload" method="post">
+            <label for="idfoto">ID Foto:</label>
+            <input type="text" id="idfoto" name="idfoto" required>
+            
+            <label for="nama">Nama:</label>
+            <input type="text" id="nama" name="nama" required>
+            
+            <label for="jabatan">Jabatan:</label>
+            <input type="text" id="jabatan" name="jabatan" required>
+            
+            <input type="hidden" id="photoData" name="photoData">
+            
+            <button type="button" id="captureButton">Capture Photo</button>
+            <button type="submit">Submit</button>
+        </form>
+        
+        <div id="videoContainer">
+            <video id="video" autoplay></video>
+            <canvas id="overlayCanvas"></canvas>
+        </div>
+    </div>
+    
+    <script defer src="models/face-api.js"></script>
+    <script defer src="js/script.js"></script>
+</body>
+</html>

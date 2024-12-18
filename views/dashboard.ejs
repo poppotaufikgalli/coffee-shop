@@ -1,0 +1,96 @@
+<div class="stats">
+    <div class="stat">
+        <i class="fas fa-user fa-2x"></i>
+        <h2>120</h2>
+        <p>Total Pelanggan</p>
+    </div>
+    <div class="stat">
+        <i class="fas fa-receipt fa-2x"></i>
+        <h2>10.000.000</h2>
+        <p>Total Transaksi</p>
+    </div>
+    <div class="stat">
+        <i class="fas fa-bookmark fa-2x"></i>
+        <h2>20</h2>
+        <p>Total Menu</p>
+    </div>
+</div>
+<div class="chart-container">
+    <div class="chart-header">
+        <h3>Preview penjualan</h3>
+        <select id="timeFilter">
+            <option value="year">This Year</option>
+            <option value="month">This Month</option>
+            <option value="week">This Week</option>
+        </select>
+    </div>
+    <div class="chart">
+        <canvas id="salesChart" width="600" height="300"></canvas>
+    </div>
+</div>
+<script>
+    // Simulated data fetching from a database
+    const fetchData = async (filter) => {
+        // Replace this with actual data fetching from your backend
+        if (filter === 'year') {
+            return [
+                { period: 'Jan', sales: 1000000 },
+                { period: 'Feb', sales: 2500000 },
+                { period: 'Mar', sales: 5000000 },
+                { period: 'Apr', sales: 7500000 },
+                { period: 'May', sales: 9000000 },
+                { period: 'Jun', sales: 10000000 }
+            ];
+        } else if (filter === 'month') {
+            return [
+                { period: 'Week 1', sales: 2000000 },
+                { period: 'Week 2', sales: 3000000 },
+                { period: 'Week 3', sales: 4000000 },
+                { period: 'Week 4', sales: 5000000 }
+            ];
+        } else if (filter === 'week') {
+            return [
+                { period: 'Mon', sales: 500000 },
+                { period: 'Tue', sales: 700000 },
+                { period: 'Wed', sales: 800000 },
+                { period: 'Thu', sales: 600000 },
+                { period: 'Fri', sales: 900000 },
+                { period: 'Sat', sales: 1000000 },
+                { period: 'Sun', sales: 1100000 }
+            ];
+        }
+    };
+
+    const renderChart = async (filter) => {
+        const data = await fetchData(filter);
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(item => item.period),
+                datasets: [{
+                    label: 'Sales',
+                    data: data.map(item => item.sales),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    };
+
+    document.getElementById('timeFilter').addEventListener('change', (event) => {
+        renderChart(event.target.value);
+    });
+
+    // Initial render
+    renderChart('year');
+</script>
