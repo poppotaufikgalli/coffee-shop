@@ -2,19 +2,30 @@
 
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts')
-var hash = require('pbkdf2-password')()
+//var hash = require('pbkdf2-password')()
 const path = require('path');
-//const mysql = require('mysql2');
+const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 var session = require('express-session');
+const crypto = require('crypto');
+//var logger = require('morgan');
+const passport = require('passport')
+//const {loginCheck} = require('./auth/passport')
+//loginCheck(passport)
+
+//const faceapi = require("face-api.js");
+//const canvas = require("canvas");
+
+//const { Canvas, Image, ImageData } = canvas;
+//faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 
 const app = express();
 const port = 3000;
 
 // Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({ limit: '10mb' })); // Increase body size limit
+//app.use(bodyParser.json({ limit: '10mb' })); // Increase body size limit
 app.use(express.static('public'));
 app.use('/css', express.static(path.join(__dirname, 'public/css')))
 app.use('/models', express.static(path.join(__dirname, 'public/models')))
@@ -25,32 +36,19 @@ app.use(expressLayouts)
 app.set('layout', './layouts/default')
 app.set('view engine', 'ejs');
 
-
-// MySQL connection setup
-/*const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'facejava'
-});
-
-db.connect((err) => {
-  if (err) throw err;
-  console.log('Connected to MySQL Database');
-});*/
-
 // middleware
 
-app.use(express.urlencoded())
+//app.use(express.urlencoded())
 app.use(session({
   resave: false, // don't save session if unmodified
   saveUninitialized: false, // don't create session until something stored
-  secret: 'shhhh, very secret'
+  secret: 'shhhh, very secret',
+  cookie: { secure: false }
 }));
 
 // Session-persisted message middleware
 
-app.use(function(req, res, next){
+/*app.use(function(req, res, next){
   var err = req.session.error;
   var msg = req.session.success;
   delete req.session.error;
@@ -60,53 +58,33 @@ app.use(function(req, res, next){
   if (msg) res.locals.message = '<div class="alert alert-success alert-dismissible fade show" role="alert">' + msg + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
   res.locals.user = req.session.user;
   next();
+});*/
+
+//User session 
+app.use(passport.initialize())
+app.use(passport.authenticate('session'));
+
+app.use(function(req, res, next) {
+  var msgs = req.session.messages || [];
+  res.locals.messages = msgs;
+  res.locals.hasMessages = !! msgs.length;
+  req.session.messages = [];
+  res.locals.user = req.user;
+  //console.log(passport)
+  next();
 });
 
-// dummy database
+app.use('/', require('./routes/login'))
+app.use('/', require('./routes/karyawan'))
+app.use('/', require('./routes/menu'))
+app.use('/', require('./routes/pelanggan'))
+app.use('/', require('./routes/transaksi'))
+app.use('/', require('./routes/kasir'))
+app.use('/', require('./routes/index'))
 
-var users = {
-  admin: { name: 'admin' }
-};
-
-// when you create a user, generate a salt
-// and hash the password ('foobar' is the pass here)
-
-hash({ password: 'admin' }, function (err, pass, salt, hash) {
-  if (err) throw err;
-  // store the salt & hash in the "db"
-  users.admin.salt = salt;
-  users.admin.hash = hash;
-});
-
-
-// Authenticate using our plain-object database of doom!
-
-function authenticate(name, pass, fn) {
-  if (!module.parent) console.log('authenticating %s:%s', name, pass);
-  var user = users[name];
-  // query the db for the given username
-  if (!user) return fn(null, null)
-  // apply the same algorithm to the POSTed password, applying
-  // the hash against the pass / salt, if there is a match we
-  // found the user
-  hash({ password: pass, salt: user.salt }, function (err, pass, salt, hash) {
-    if (err) return fn(err);
-    if (hash === user.hash) return fn(null, user)
-    fn(null, null)
-  });
-}
-
-function restrict(req, res, next) {
-  if (req.session.user) {
-    next();
-  } else {
-    req.session.error = 'Access denied!';
-    res.redirect('/login');
-  }
-}
 
 // Routes
-app.get('/', restrict, (req, res) => {
+/*app.get('/', restrict, (req, res) => {
   //res.sendFile(path.join(__dirname, 'public', 'views', 'index.html')); // Use sendFile to serve the HTML file
   res.render('dashboard', {
     title: 'Dashboard'
@@ -142,6 +120,29 @@ app.get('/data-menu', restrict, (req, res) => {
 });
 
 app.get('/data-karyawan', restrict, (req, res) => {
+  const sql = 'SELECT * FROM users';
+
+  db.query(sql, (err, result) => {
+    if (err || result.length == 0) {
+      console.error('Error select user:', err);
+      return fn(null, null)
+      //return res.status(500).send('Error saving user data');
+    }
+
+    const user = result[0]
+
+    crypto.pbkdf2(password, user.salt, 10000, 512, 'sha512', (err, hash) => {
+        if (user.hash.toString() === hash.toString('hex')) {
+          //res.sendStatus(200);
+          return fn(null, user)
+        } else {
+          //res.sendStatus(401);
+          return fn(null, null)
+        }
+      }
+    );
+  });
+
   //res.sendFile(path.join(__dirname, 'public', 'views', 'index.html')); // Use sendFile to serve the HTML file
   res.render('data-karyawan', {
     title: 'Data Karyawan'
@@ -150,7 +151,8 @@ app.get('/data-karyawan', restrict, (req, res) => {
 
 app.get('/login', (req, res) => {
   res.render('login', {
-    title: 'Login'
+    title: 'Login',
+    layout: 'layouts/login',
   });
 });
 
@@ -173,7 +175,6 @@ app.post('/login', (req, res, next) => {
     } else {
       req.session.error = 'Authentication failed, please check your '
         + ' username and password.'
-        + ' (use "admin" and "admin")';
       res.redirect('/login');
     }
   });
@@ -192,7 +193,7 @@ app.get('/transaksi', (req, res) => {
     title: 'Transaksi',
     layout: 'layouts/transaksi',
   });
-});
+});*/
 
 /*app.post('/upload', (req, res) => {
   const { idfoto, nama, jabatan, photoData } = req.body;
@@ -224,11 +225,11 @@ app.get('/transaksi', (req, res) => {
       res.redirect('/');
     });
   });
-});
+});*/
 
 // Mengambil ID dengan validasi file di folder dataset
 app.get('/get-ids', (req, res) => {
-  const sql = 'SELECT idfoto FROM user';
+  const sql = 'SELECT idfoto FROM customers';
 
   db.query(sql, (err, results) => {
     if (err) {
@@ -244,7 +245,7 @@ app.get('/get-ids', (req, res) => {
   });
 });
 
-app.get('/user-info/:idfoto', (req, res) => {
+/*app.get('/user-info/:idfoto', (req, res) => {
   const sql = 'SELECT * FROM user WHERE idfoto = ?';
   
   db.query(sql, [req.params.idfoto], (err, results) => {

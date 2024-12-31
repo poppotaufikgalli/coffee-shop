@@ -1,0 +1,57 @@
+<div class="card border-0 shadow">
+    <div class="card-body">
+        <div class="d-flex mb-4">
+            <a class="btn btn-primary" href="/form-menu">
+                <i class="fas fa-plus"></i> ADD NEW
+            </a>
+        </div>
+        <table class="table" id="myTable">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" /></th>
+                    <th>Nama Produk <i class="fas fa-sort"></i></th>
+                    <th>Kategori</th>
+                    <th>Harga</th>
+                    <th>Gambar</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.addEventListener("DOMContentLoaded", function () {
+        let table = new DataTable('#myTable', {
+            ajax: {
+                url: '/api/menu',
+                contentType: 'application/json',
+                type: 'GET',
+                data: function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            columns: [
+                {
+                    data: null,
+                    defaultContent: '<input type="checkbox" />'
+                },
+                { data: 'nama_produk' },
+                { data: 'kategori' },
+                { data: 'harga' },
+                { data: 'gambar' },
+                { 
+                    data: null,
+                    defaultContent: '<button class="btn btn-edit"><i class="fas fa-edit"></i></button><button class="btn btn-delete"><i class="fas fa-trash"></i></button>'
+                }
+            ]
+        });
+    });
+     
+    /*function search(dt, el) {
+        if (dt.search() !== el.value) {
+            dt.search(el.value).draw();
+        }
+    }*/
+</script>

@@ -1,0 +1,63 @@
+<div class="content">
+    <div class="section">
+        <div class="d-flex">
+            <a class="btn btn-sm btn-add">
+                <i class="fas fa-plus"></i> ADD NEW
+            </a>
+        </div>
+        <table class="table" id="myTable">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" /></th>
+                    <th>Nama</th>
+                    <th>Mulai Bekerja</th>
+                    <th>Status</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(data) { %>
+                    <% for(var i=0; i < data.length; i++) { %>
+                       <tr>
+                            <td>
+                                <input type="checkbox" />
+                            </td>
+                            <td><%= data[i].nama_karyawan %></td>
+                            <td><%= data[i].tanggal_mulai %></td>
+                            <td><%= data[i].status %></td>
+                            <td><%= data[i].username %></td>
+                            <td><%= data[i].password %></td>
+                            <td class="actions">
+                                <a class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                       </tr>
+                    <% } %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.addEventListener("DOMContentLoaded", function () {
+       
+        let table = new DataTable("#myTable", {
+            initComplete: function () {}
+            // Apply the search
+            
+        });
+    });
+     
+    function search(dt, el) {
+        if (dt.search() !== el.value) {
+            dt.search(el.value).draw();
+        }
+    }
+</script>

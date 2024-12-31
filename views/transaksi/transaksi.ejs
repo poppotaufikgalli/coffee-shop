@@ -21,7 +21,7 @@
                 </option>
             </select>
         </div>
-        <table>
+        <table class="table" id="myTable">
             <thead>
                 <tr>
                     <th>
@@ -193,20 +193,6 @@
                 Rp. XXXXXXX
             </span>
         </div>
-        <div class="pagination">
-            <a href="#">
-                1
-            </a>
-            <a href="#">
-                2
-            </a>
-            <a href="#">
-                3
-            </a>
-            <a href="#">
-                4
-            </a>
-        </div>
     </div>
     <div class="section">
         <h2>
@@ -359,3 +345,19 @@
         </table>
     </div>
 </div>
+<script type="text/javascript">
+    window.addEventListener("DOMContentLoaded", function () {
+       
+        let table = new DataTable("#myTable", {
+            initComplete: function () {}
+            // Apply the search
+            
+        });
+    });
+     
+    function search(dt, el) {
+        if (dt.search() !== el.value) {
+            dt.search(el.value).draw();
+        }
+    }
+</script>

@@ -3,18 +3,32 @@
     "version": "1.0.0",
     "main": "app.js",
     "scripts": {
-        "start": "node app.js"
+        "start": "node app.js",
+        "dev": "nodemon app.js"
     },
     "dependencies": {
-        "body-parser": "^1.20.2",
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.20.3",
+        "canvas": "^3.0.0",
+        "connect-ensure-login": "^0.1.1",
+        "datatables.net-bs5": "^2.1.8",
+        "datatables.net-dt": "^2.1.8",
+        "dotenv": "^16.4.7",
         "ejs": "^3.1.10",
         "express": "^4.19.2",
         "express-ejs-layouts": "^2.5.1",
+        "express-flash": "^0.0.2",
         "express-session": "^1.18.1",
-        "face-api.js": "^0.20.0",
+        "face-api.js": "^0.20.1",
         "multer": "^1.4.4",
         "mysql": "^2.18.1",
         "mysql2": "^3.9.7",
-        "pbkdf2-password": "^1.2.1"
+        "passport": "^0.7.0",
+        "passport-local": "^1.0.0",
+        "pbkdf2-password": "^1.2.1",
+        "sequelize": "^6.37.5"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.9"
     }
 }

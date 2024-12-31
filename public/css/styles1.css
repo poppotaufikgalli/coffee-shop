@@ -1,5 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Poppins', serif !important;
     margin: 0;
     padding: 0;
     display: flex;
@@ -49,15 +50,23 @@ body {
 .main-content {
     flex: 1;
     margin-left: 250px;
+    margin-top: 100px;
     width: calc(100% - 250px);
     padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
 }
 .header {
+    position: absolute;
+    top: 0;
     background-color: #a97c50;
     color: #fff;
     padding: 10px;
-    border-radius: 10px;
+    padding-top: 70px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     text-align: center;
+    margin-top: 0px;
     margin-bottom: 20px;
 }
 .header h1 {
@@ -227,7 +236,7 @@ body {
 
 /* transaksi page */
 body.trx {
-    font-family: sans-serif;
+    font-family: "Poppons", serif;
     display: flex;
     margin: 8px;
     padding: 20px;
@@ -245,22 +254,19 @@ body.trx {
     flex-wrap: wrap;
 }
 .trx .sidebari {
+    border-radius: 10px;
+    padding: 10px;
+    
     width: 30%;
-    padding: 20px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    margin: 20px;
+    margin-right: 10px;
     position: relative;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 .trx .cardi {
     background-color: #fff;
     border-radius: 10px;
     padding: 10px;
-    margin-bottom: 20px;
-    width: 20%;
-    height: 40%;
     text-align: center;
-    
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 .trx .cardi img {
@@ -288,20 +294,7 @@ body.trx {
     margin-top: 0px;
     margin-bottom: 5px;
 }
-#video {
-    width: 90%;
-    position: absolute;
-    top: 2;
-    left: 2;
-    z-index: 1;
-}
-#overlayCanvas {
-    position: absolute;
-    top: 2;
-    left: 2;
-    width: 90%;
-    z-index: 2;
-}
+
 
 #registrationForm{
     /* padding: 10px; */
@@ -327,8 +320,17 @@ body.trx {
 
 /*Login css*/
 .form-signin {
-    max-width: 330px;
+    font-family: 'Poppins', sans-serif;
+    width: 479px;
     padding: 1rem;
+    left: calc(50% - 479px/2);
+    top: calc(60% - 479px/2);
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0.79;
+    backdrop-filter: blur(30px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 20px;
+    position: absolute;
 }
 
 .form-signin .form-floating:focus-within {
@@ -337,12 +339,12 @@ body.trx {
 
 .form-signin input[type="text"] {
     margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
 }
 
 .form-signin input[type="password"] {
     margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+}
+
+table.dataTable td.dt-empty {
+    text-align: center !important;    
 }

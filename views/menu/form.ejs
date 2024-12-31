@@ -1,0 +1,53 @@
+<div class="card">
+    <div class="card-body">
+        <form method="post" action="/data-menu" enctype="multipart/form-data"> 
+            <div class="mb-3">
+                <label for="nama_produk" class="form-label">Nama Produk</label>
+                <input type="text" class="form-control" id="nama_produk" name="nama_produk" required>
+            </div>
+            <div class="mb-3">
+                <label for="kategori" class="form-label">Kategori</label>
+                <select class="form-control" id="kategori" name="kategori" required>
+                    <option value="" selected disabled>pilih kategori</option>
+                    <option value="makanan">Makanan</option>
+                    <option value="minuman">Minuman</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="harga" class="form-label">Harga</label>
+                <input type="text" class="form-control" id="harga" name="harga" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Gambar</label>
+                <input type="file" class="form-control" id="gambar" name="gambar" accept="image/gif, image/jpeg, image/png" onchange="loadFile(event)">
+                <img id="output" width="200" class="img-fluid mt-4" />
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                <a href="/data-menu" class="btn btn-outline-secondary">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var loadFile = function(event) {
+        var image = document.getElementById('output');
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
+
+    window.addEventListener("DOMContentLoaded", function () {
+       
+        let table = new DataTable("#myTable", {
+            initComplete: function () {}
+            // Apply the search
+            
+        });
+    });
+     
+    function search(dt, el) {
+        if (dt.search() !== el.value) {
+            dt.search(el.value).draw();
+        }
+    }
+</script>
