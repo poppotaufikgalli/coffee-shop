@@ -8,7 +8,7 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 var session = require('express-session');
-const crypto = require('crypto');
+//const crypto = require('crypto');
 //var logger = require('morgan');
 const passport = require('passport')
 //const {loginCheck} = require('./auth/passport')
@@ -39,12 +39,20 @@ app.set('view engine', 'ejs');
 // middleware
 
 //app.use(express.urlencoded())
-app.use(session({
+const sessionOptions = {
   resave: false, // don't save session if unmodified
   saveUninitialized: false, // don't create session until something stored
   secret: 'shhhh, very secret',
-  cookie: { secure: false }
-}));
+  cookie: {
+    maxAge: 3600000,
+  },
+};
+
+if (app.get('env') === 'production') {
+  sessionOptions.cookie.secure = true
+}
+
+app.use(session(sessionOptions))
 
 // Session-persisted message middleware
 
@@ -73,6 +81,13 @@ app.use(function(req, res, next) {
   //console.log(passport)
   next();
 });
+
+/*const a = require('./models/TableData')
+console.log(a.Delete(
+  'menu', 
+  //{"status": 0, 'nama_kategori': "abu"}, 
+  {"id": 1, "is": 1}
+))*/
 
 app.use('/', require('./routes/login'))
 app.use('/', require('./routes/karyawan'))

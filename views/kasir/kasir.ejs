@@ -92,18 +92,18 @@
 					<input type="search" class="form-control" name="" placeholder="cari menu">
 				</div>
 				<div class="row g-2  overflow-y-auto" style="height: 90vh">
-					<% for(var i=0; i < 11; i++) { %>
+					<% for(var i=0; i < data.length; i++) { %>
 						<div class="col-md-4">
 							<div class="card border-0 shadow">
 								<div class="d-flex justify-content-center align-items-center overflow-hidden" style="max-height: 20vh;border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
-							  		<img src="https://picsum.photos/200/300" class="card-img-top" alt="...">
+							  		<img src="/uploads/menu/<%=data[i].gambar%>" class="card-img-top" alt="...">
 							  	</div>
 							  	<div class="card-body">
 							    	<div class="d-flex gap-2">
 							    		<button class="btn btn-secondary"><i class="fa fa-plus"></i></button>
 							    		<div class="d-grid">
-							    			<span class="h5">apes</span>
-							    			<label>Rp.5.000</label>
+							    			<span class="h5"><%=data[i].nama_produk%></span>
+							    			<label>Rp.<%=(data[i].harga).toLocaleString() %></label>
 							    		</div>	
 							    	</div>
 							  	</div>
@@ -157,3 +157,21 @@
 </div>
 <!--<script defer src="/js/script.js"></script>
 <script defer src="/js/face-api.min.js"></script>-->
+<script type="text/javascript">
+	window.addEventListener("DOMContentLoaded", function () {
+        $.ajax({
+            url: "/api/menu/",
+            type: "get",
+            success: function (d) {
+                if(d.ok){
+                    const {data} = d
+                    //document.getElementById("nama_produk").value = data.nama_produk    
+                    //document.getElementById("kategori").value = data.kategori    
+                    //document.getElementById("harga").value = data.harga    
+                    //document.getElementById("output").src = '/uploads/menu/'+data.gambar    
+                    console.log(data)
+                }
+            }
+        });
+    });
+</script>

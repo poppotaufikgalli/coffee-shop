@@ -1,7 +1,7 @@
 <div class="card border-0 shadow">
     <div class="card-body">
         <div class="d-flex mb-4">
-            <a class="btn btn-primary" href="/form-menu">
+            <a class="btn btn-sm btn-primary" href="/form-menu">
                 <i class="fas fa-plus"></i> ADD NEW
             </a>
         </div>
@@ -38,14 +38,65 @@
                     defaultContent: '<input type="checkbox" />'
                 },
                 { data: 'nama_produk' },
-                { data: 'kategori' },
-                { data: 'harga' },
-                { data: 'gambar' },
+                { data: 'nama_kategori' },
                 { 
                     data: null,
-                    defaultContent: '<button class="btn btn-edit"><i class="fas fa-edit"></i></button><button class="btn btn-delete"><i class="fas fa-trash"></i></button>'
+                    render: function (data, type, row, meta) {
+                        return "Rp."+(data.harga).toLocaleString();
+                    }
+                },
+                { 
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        var image = `<img src="/uploads/menu/${data.gambar}" class="img-fluid" >`;
+                        return image;
+                    }
+                },
+                { 
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        var btnGroup = `<div class="btn-group">`;
+                        btnGroup = btnGroup + `<button class="btn btn-sm btn-primary editButton"><i class="fas fa-edit"></i></button>`;
+                        btnGroup = btnGroup + `<button class="btn btn-sm btn-danger deleteButton"><i class="fas fa-trash"></i></button>`;
+                        btnGroup = btnGroup + `</div>`;
+                        return btnGroup;
+                    }
                 }
             ]
+        });
+
+        table.on('click', '.editButton', function() {
+            var data = table.row( $(this).parents('tr') ).data();
+            console.log(data)
+            window.location.href = "/form-menu/"+data.id
+        });
+
+        table.on('click', '.deleteButton', function() {
+            var data = table.row( $(this).parents('tr') ).data();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!"+data.id,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //window.location.href = "/delete-menu/"+data.id    
+                    $.ajax({
+                        url: "/api/delete-menu/",
+                        type: "POST",
+                        data: {'id': data.id},
+                        success: function () {
+                            Swal.fire("Done!","It was succesfully deleted!","success");
+                            table.ajax.reload();
+                        }
+                    });
+                }
+            });
+            //console.log(data)
+            
         });
     });
      

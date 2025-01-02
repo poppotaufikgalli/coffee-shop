@@ -2,83 +2,96 @@ var express = require('express');
 var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
 var ensureLoggedIn = ensureLogIn();
 var router = express.Router();
-var db = require('../config/database');
+var crypto = require('crypto');
+const multer  = require('multer')
 
-async function getData(id = null){
-  if(id == null){
-    db.query('SELECT * FROM karyawan', function(err, results) {
-        if (err) { 
-          return {
-            'ok' : false,
-          }; 
-        }
-        if (!results || results.length  == 0) {
-          return {
-            'ok' : false,
-          }; 
-        }
-        console.log(results)
-        return {
-          'ok' : true,
-          'data': results
-        }
-    });
-  }else{
-    db.query('SELECT * FROM karyawan where id', [id], function(err, results) {
-        if (err) { 
-          return {
-            'ok' : false,
-          }; 
-        }
-        if (!results || results.length  == 0) {
-          return {
-            'ok' : false,
-          }; 
-        }
-        
-        return {
-          'ok' : true,
-          'data': results[0]
-        }
-    });
-  }
-}
+const table = require('../models/TableData')
 
-router.get('/data-karyawan', async function(req, res) {
-  db.query('SELECT * FROM karyawan', function(err, results) {
-      if (err) { 
-        return res.status(504);
-      }
-     
-      res.render('karyawan/karyawan', {
-        title: 'Data Karyawan',
-        data: results,
-      });
+const path = require('path');
+let upload = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, `public/uploads/menu/`);
+        },
+        filename: function (req, file, cb) {
+            cb(null, file.originalname);
+        },
+    }),
+});
+
+router.get('/data-karyawan', function(req, res) {
+  res.render('karyawan/karyawan', {
+    title: 'Data Karyawan',
   });
 });
 
-/*router.route('/data-karyawan')
-  .get(async function (req, res) {
-    var result = getData().then(result => 
-        {
-            return result;
-        }   
-    ).catch(err => 
-        {
-            return null;
-        }
-    )
-    console.log(result)
-    res.render('data-karyawan', {
-      title: 'Data Karyawan',
-      data: result,
-    });
-  })
-  .post(function (req, res) {
-    res.send('Add a book')
-  })
-  .put(function (req, res) {
-    res.send('Update the book')
-  });*/
+router.get('/api/karyawan/:id?', async function(req, res) {
+  var id = req.params.id
+  //var sql = `select karyawan.* from menu left join menu_kategori on (menu.kategori = menu_kategori.id) where menu.status =1`
+  if(id == null){
+    var results = await table.All('karyawan');
+    return res.json({ data: results })
+  }else{
+    var results = await table.Find('karyawan', {'id': id});
+    return res.json({ data: results })
+  }
+});
+
+router.get('/form-karyawan/:id?', async function(req, res) {
+  var id = req.params.id
+  var lsRole = await table.All('role')
+  //console.log(lsKategori)
+  res.render('karyawan/form', {
+    title: 'Form Karyawan',
+    kategori: lsRole,
+    id: id,
+  });
+});
+
+router.post('/data-karyawan/:id?', upload.single('foto'), async function(req, res) {
+  var id = req.params.id
+  var uid = req.session.passport.user.id_karyawan
+  const {nama_karyawan, tanggal_mulai, username, password, role} = req.body;
+  if(id != null){
+
+    var keys = {'id': id}
+    var data = {
+      "nama_karyawan": nama_karyawan,
+      "tanggal_mulai": tanggal_mulai,
+      "username": username,
+      //"password": password,
+      "role": role,
+      "updated_uid": uid,
+    }
+
+    if(req.file !== undefined){
+      data['foto'] =  req.file.filename
+    }
+
+    await table.Update("karyawan", data, keys)
+  }else{
+    var salt = crypto.randomBytes(1024).toString('hex');
+
+    const hash = crypto.pbkdf2Sync(password, salt, 10000, 521, "sha512") .toString("hex"); 
+    console.log(hash)
+
+    var data = {
+      "nama_karyawan": nama_karyawan,
+      "tanggal_mulai": tanggal_mulai,
+      "username": username,
+      "hash": hash,
+      "salt": salt,
+      "role": role,
+      "created_uid": uid,
+    }
+
+    if(req.file !== undefined){
+      data['foto'] =  req.file.filename
+    }
+    await table.Create("karyawan", data)
+  }
+
+  res.redirect('/data-karyawan');
+});
 
 module.exports = router;
