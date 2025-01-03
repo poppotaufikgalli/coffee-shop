@@ -23,6 +23,7 @@ router.get('/api/menu/:id?', async function(req, res) {
   var sql = `select menu.*, menu_kategori.nama_kategori from menu left join menu_kategori on (menu.kategori = menu_kategori.id) where menu.status =1`
   if(id == null){
     var results = await table.Query(sql);
+    //console.log(results)
     return res.json({ data: results })
   }else{
     var results = await table.Find('menu', {'id': id});

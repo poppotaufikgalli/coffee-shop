@@ -11,7 +11,7 @@ const path = require('path');
 let upload = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, `public/uploads/menu/`);
+            cb(null, `public/uploads/karyawan/`);
         },
         filename: function (req, file, cb) {
             cb(null, file.originalname);
@@ -27,12 +27,12 @@ router.get('/data-karyawan', function(req, res) {
 
 router.get('/api/karyawan/:id?', async function(req, res) {
   var id = req.params.id
-  //var sql = `select karyawan.* from menu left join menu_kategori on (menu.kategori = menu_kategori.id) where menu.status =1`
+  var sql = `select karyawan.* from karyawan left join role on (karyawan.role = role.id) where karyawan.status =1`
   if(id == null){
-    var results = await table.All('karyawan');
+    var results = await table.Query(sql);
     return res.json({ data: results })
   }else{
-    var results = await table.Find('karyawan', {'id': id});
+    var results = await table.Find('karyawan', {'id_karyawan': id});
     return res.json({ data: results })
   }
 });
@@ -54,7 +54,7 @@ router.post('/data-karyawan/:id?', upload.single('foto'), async function(req, re
   const {nama_karyawan, tanggal_mulai, username, password, role} = req.body;
   if(id != null){
 
-    var keys = {'id': id}
+    var keys = {'id_karyawan': id}
     var data = {
       "nama_karyawan": nama_karyawan,
       "tanggal_mulai": tanggal_mulai,
@@ -70,10 +70,10 @@ router.post('/data-karyawan/:id?', upload.single('foto'), async function(req, re
 
     await table.Update("karyawan", data, keys)
   }else{
-    var salt = crypto.randomBytes(1024).toString('hex');
+    //console.log(req.body)
+    var salt = crypto.randomBytes(86).toString('hex');
 
-    const hash = crypto.pbkdf2Sync(password, salt, 10000, 521, "sha512") .toString("hex"); 
-    console.log(hash)
+    const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString("hex"); 
 
     var data = {
       "nama_karyawan": nama_karyawan,
@@ -93,5 +93,40 @@ router.post('/data-karyawan/:id?', upload.single('foto'), async function(req, re
 
   res.redirect('/data-karyawan');
 });
+
+router.post('/api/delete-karyawan',async function(req, res){
+  var id = req.body.id;
+  var uid = req.session.passport.user.id_karyawan
+  if(id !== null){
+    var results = await table.Delete('karyawan', {'id_karyawan': id}, uid);
+    return res.json({ ok: true, data: results })
+    
+  }else{
+    return res.json({ ok: false })
+  }
+})
+
+router.post('/api/reset-password/:id?',async function(req, res){
+  var id = req.params.id;
+  var uid = req.session.passport.user.id_karyawan
+  const {password} = req.body;
+  if(id !== null){
+    var keys = {'id_karyawan': id}
+    var salt = crypto.randomBytes(86).toString('hex');
+    const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString("hex"); 
+
+    var data = {
+      "hash": hash,
+      "salt": salt,
+      "updated_uid": uid,
+    }
+
+    var results = await table.Update('karyawan', data, keys);
+    return res.json({ ok: true, data: results })
+    
+  }else{
+    return res.json({ ok: false })
+  }
+})
 
 module.exports = router;

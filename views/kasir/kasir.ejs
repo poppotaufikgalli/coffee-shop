@@ -2,70 +2,27 @@
 	<div class="col-md-3" style="background-color: #FFE7C1;">
 		<div class="d-flex flex-sm-column flex-row justify-content-between min-vh-100">
 		  	<div class="p-2 w-100">
-		  		<section class="mb-4">
-					<h5>Pelanggan Kita Kah?</h5>
-					<div class="card card-body shadow border-0">  
-						
-						<video id="" autoplay style="width: 100%" class="rounded"></video>
-						<canvas id="overlayCanvas" style="position: absolute; width: 100%;"></canvas>
-						
-						<div class="d-flex justify-content-around gap-2">
-							<button class="btn text-dark w-100" style="background-color: #BA740B; border-radius: 10px;"  id="captureButton">dikenali</button>
-							<button class="btn text-dark w-100" style="background-color: #F9C06A; border-radius: 10px;">tambah data</button>
+		  		<div id="registrationForm">
+			  		<section class="mb-4">
+						<h5>
+							<%= pelanggan ? "Mr./Mrs. "+pelanggan.nama_pelanggan : "Pelanggan kita kah?" %>
+						</h5>
+						<div class="card card-body p-1 shadow border-0">  
+							
+							<video id="video" autoplay style="width: 100%" class="rounded"></video>
+							<canvas id="overlayCanvas" style="width: 100%; position: absolute;"></canvas>
+							<ul class="small mt-2" id="listPelanggan"></ul>
+
+							<div class="d-flex justify-content-around gap-2 p-1 mt-2">
+								<button id="" class="btn btn-sm text-dark w-100" style="background-color: #BA740B; border-radius: 10px;">dikenali</button>
+								<button id="captureButton" data-bs-toggle="modal" data-bs-target="#pelangganModal" class="btn btn-sm text-dark w-100" style="background-color: #F9C06A; border-radius: 10px;">tambah data</button>
+							</div>
 						</div>
-					
-					</div>
-				</section>
+					</section>
+				</div>
 				<section class="mb-4">
 					<h5>Pesanan : </h5>
-					<div class="vstack gap-2 overflow-y-auto" style="height: 40vh">
-						<% for(var i=0; i < 11; i++) { %>
-							<div class="bg-white p-2 rounded">
-								<div class="row g-1">
-								    <div class="col-md-2">
-								      	<img src="img/cake1.png" class="img-fluid rounded-start" alt="...">
-								    </div>
-								    <div class="col">
-								    	<div class="d-grid">
-									      	<h5 class="card-title mb-2">Menu 1</h5>
-									      	<div class="block">
-										      	<div class="input-group input-group-sm">
-										      		<button class="btn btn-sm btn-outline-secondary m-0" type="button"><i class="fa fa-plus"></i></button>
-												  	<input type="text" aria-label="First name" class="form-control" value="1">
-												  	<button class="btn btn-sm btn-outline-secondary m-0" type="button"><i class="fa fa-minus"></i></button>
-												</div>
-											</div>
-										</div>
-								    </div>
-								    <div class="col d-flex justify-content-end align-items-center">
-								      	<span class="text-sm">Rp.11.111</span>
-								    </div>
-								</div>
-							</div>
-							<div class="bg-white p-2 rounded">
-								<div class="row g-1">
-								    <div class="col-md-2">
-								      	<img src="img/cake1.png" class="img-fluid rounded-start" alt="...">
-								    </div>
-								    <div class="col">
-								      	<div class="d-grid">
-									      	<h5 class="card-title mb-2">Menu 1</h5>
-									      	<div class="block">
-										      	<div class="input-group input-group-sm">
-										      		<button class="btn btn-sm btn-outline-secondary m-0" type="button"><i class="fa fa-plus"></i></button>
-												  	<input type="text" aria-label="First name" class="form-control" value="1">
-												  	<button class="btn btn-sm btn-outline-secondary m-0" type="button"><i class="fa fa-minus"></i></button>
-												</div>
-											</div>
-										</div>
-								    </div>
-								    <div class="col d-flex justify-content-end align-items-center">
-								      	<span class="text-sm">Rp.11.111</span>
-								    </div>
-								</div>
-							</div>
-						<% } %>
-					</div>
+					<div class="vstack gap-2 overflow-y-auto" style="height: 40vh" id="listPesanan"></div>
 				</section>
 		  	</div>
 		  	<div class="flex-shrink-1 pb-3">
@@ -74,12 +31,12 @@
 						<div class="row g-1">
 						    <span class="col small">Total yang harus dibayar:</span>
 							<div class="col d-flex justify-content-end align-items-center">
-								<h4>Rp. xx.xxx</h4>
+								<h5 id="totalBayar">Rp.0</h5>
 							</div>
 						</div>
 					</div>
 					<div class="d-flex justify-content-center">
-						<button class="btn text-dark" style="background-color: #BA740B; border-radius: 10px;"  id="captureButton">ok bungkus</button>
+						<button class="btn text-dark" style="background-color: #BA740B; border-radius: 10px;" id="submitPembayaran">ok bungkus</button>
 					</div>
 				</div>
 		  	</div>
@@ -89,28 +46,9 @@
 		<div class="row">
 			<div class="col-sm p-3 min-vh-100">
 	            <div class="d-flex mb-4">
-					<input type="search" class="form-control" name="" placeholder="cari menu">
+					<input type="search" id="searchMenu" class="form-control" name="" placeholder="cari menu">
 				</div>
-				<div class="row g-2  overflow-y-auto" style="height: 90vh">
-					<% for(var i=0; i < data.length; i++) { %>
-						<div class="col-md-4">
-							<div class="card border-0 shadow">
-								<div class="d-flex justify-content-center align-items-center overflow-hidden" style="max-height: 20vh;border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
-							  		<img src="/uploads/menu/<%=data[i].gambar%>" class="card-img-top" alt="...">
-							  	</div>
-							  	<div class="card-body">
-							    	<div class="d-flex gap-2">
-							    		<button class="btn btn-secondary"><i class="fa fa-plus"></i></button>
-							    		<div class="d-grid">
-							    			<span class="h5"><%=data[i].nama_produk%></span>
-							    			<label>Rp.<%=(data[i].harga).toLocaleString() %></label>
-							    		</div>	
-							    	</div>
-							  	</div>
-							</div>
-						</div>
-					<% } %>
-				</div>
+				<div class="row g-2 overflow-y-auto" style="height: 90vh" id="lsMenu"></div>
 	        </div>
 	        <div class="col-sm-auto" style="background-color: #F9C06A;">
 	        	<div class="d-flex flex-sm-column flex-row justify-content-between min-vh-100">
@@ -119,20 +57,21 @@
 		                    <i class="fa fa-bars fs-3" style="color: #9B6B42"></i>
 		                </a>
 		                <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center">
+		                	<% if(menu_kategori) { %>
+		                        <% menu_kategori.forEach(function(item){ %>
+		                            <li class="nav-item">
+				                    	<input type="checkbox" class="btn-check btn-menu" value="<%= item.id %>" id="btn-check-<%= item.nama_kategori %>" name="btnMenu" checked autocomplete="off">
+										<label class="btn btn" for="btn-check-<%= item.nama_kategori %>">
+											<i class="<%= item.icon %>" style="color: #9B6B42"></i>
+										</label>
+				                    </li>
+		                        <% }); %>
+		                    <% } %>
 		                    <li class="nav-item">
-		                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
-		                            <i class="fa fa-utensils fs-3" style="color: #9B6B42"></i>
-		                        </a>
-		                    </li>
-		                    <li>
-		                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
-		                            <i class="fa fa-mug-hot fs-3" style="color: #9B6B42"></i>
-		                        </a>
-		                    </li>
-		                    <li>
-		                        <a href="#" class="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Orders">
-		                            <i class="fa fa-star fs-3" style="color: #9B6B42"></i>
-		                        </a>
+		                    	<input type="checkbox" class="btn-check btn-menu" id="btn-check-fav" autocomplete="off">
+								<label class="btn" for="btn-check-fav">
+									<i class="fa fa-star fs-3" style="color: #9B6B42"></i>
+								</label>
 		                    </li>
 		                </ul>
 	        		</div>
@@ -155,23 +94,236 @@
 	    </div>
 	</div>
 </div>
-<!--<script defer src="/js/script.js"></script>
-<script defer src="/js/face-api.min.js"></script>-->
+<div class="modal fade" id="pelangganModal" tabindex="-1" aria-labelledby="pelangganModalLabel" aria-hidden="true">
+  	<div class="modal-dialog">
+    	<div class="modal-content" style="background-color: #F9C06A">
+      		<div class="modal-body">
+      			<h1 class="modal-title text-center fs-4" id="pelangganModalLabel">Data Konsumen</h1>
+        		<form method="post" action="/data-pelanggan-kasir" class="mt-5" enctype="multipart/form-data">
+        			<div class="mb-3 row">
+					    <label for="photoData" class="col-sm-3 col-form-label">Kode</label>
+					    <div class="col-sm-9">
+					      	<input type="text" class="form-control" id="photoData" name="foto" required>
+					    </div>
+				  	</div> 
+        			<div class="mb-3 row">
+					    <label for="kode_pelanggan" class="col-sm-3 col-form-label">Kode</label>
+					    <div class="col-sm-9">
+					      	<input type="text" class="form-control" id="kode_pelanggan" name="kode_pelanggan" required>
+					    </div>
+				  	</div>
+					<div class="mb-3 row">
+					    <label for="nama_pelanggan" class="col-sm-3 col-form-label">Nama</label>
+					    <div class="col-sm-9">
+					      	<input type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" required>
+					    </div>
+					</div>
+					<div class="mb-3 row">
+					    <label for="no_hp" class="col-sm-3 col-form-label">No Hp.</label>
+					    <div class="col-sm-9">
+					      	<input type="text" class="form-control" id="no_hp" name="no_hp" required>
+					    </div>
+					</div>
+					<div class="d-flex justify-content-center gap-2 p-1 mt-5">
+						<button type="submit" class="btn btn-sm text-dark" data-dismiss="modal" style="background-color: #BA740B; border-radius: 10px;">Simpan dan Capture</button>
+						<button type="button" class="btn btn-sm bg-white" data-dismiss="modal" style="border-radius: 10px;">Simpan tanpa Capture</button>
+					</div>
+        		</form>
+      		</div>
+    	</div>
+  	</div>
+</div>
+<script defer src="/js/script.js"></script>
+<script defer src="/js/face-api.min.js"></script>
 <script type="text/javascript">
+	var menu = [];
+	var filterMenu = [];
+	var lsPesanan = [];
+	//var btnMenu = [];
+	var isFav = false;
+	//var lsKategori = []
+	var keys = ""
 	window.addEventListener("DOMContentLoaded", function () {
+		document.querySelectorAll('.btn-menu').forEach(item => {
+			item.addEventListener('change', function(e){
+				keys =""
+				document.getElementById('searchMenu').value = ""
+				fillMenu()
+			})
+		})
+		
         $.ajax({
             url: "/api/menu/",
             type: "get",
             success: function (d) {
-                if(d.ok){
-                    const {data} = d
-                    //document.getElementById("nama_produk").value = data.nama_produk    
-                    //document.getElementById("kategori").value = data.kategori    
-                    //document.getElementById("harga").value = data.harga    
-                    //document.getElementById("output").src = '/uploads/menu/'+data.gambar    
-                    console.log(data)
-                }
+               	const {data} = d
+
+                menu = data;
+                filterMenu = menu;
+                  
+                fillMenu()
             }
         });
+
+        document.getElementById("searchMenu").addEventListener('keyup', function(e){
+	    	keys = this.value
+	    	fillMenu()
+	    })
+
+	    document.getElementById("btn-check-fav").addEventListener('change', function(e){
+	    	isFav = this.checked
+	    })
+
+	    document.getElementById("submitPembayaran").addEventListener('click', function(e){
+	    	if(lsPesanan.length > 0){
+	    		Swal.fire({
+	                title: "Submit Pesanan?",
+	                text: "Apakah menu yang dipilih sudah benar!",
+	                icon: "warning",
+	                showCancelButton: true,
+	                confirmButtonColor: "#3085d6",
+	                cancelButtonColor: "#d33",
+	                confirmButtonText: "Ya, simpan pesanan!"
+	            }).then((result) => {
+	                if (result.isConfirmed) {
+	                    //window.location.href = "/delete-karyawan/"+data.id    
+	                    $.ajax({
+	                        url: "/api/pesanan/",
+	                        type: "POST",
+	                        data: {
+	                        	'transaksi': groupPesanan(lsPesanan),
+	                        	'id_pelanggan': '<%= id %>'
+	                        },
+	                        success: function (d) {
+	                        	console.log(d)
+	                            Swal.fire("Done!","It was succesfully deleted!","success");
+	                            //table.ajax.reload();
+	                        }
+	                    });
+	                }
+	            });
+	    	}
+	    })
     });
+
+    function addPesanan(id){
+    	var pesanan = menu.filter(i => i.id == id )
+    	lsPesanan.push(pesanan[0])
+    	fillPesanan()
+    }
+
+    function delPesanan(id){
+    	var pesanan0 = lsPesanan.filter(i => i.id == id);
+    	var pesanan1 = lsPesanan.filter(i => i.id !== id)
+    	pesanan0.splice(-1)
+    	lsPesanan = [...pesanan0, ...pesanan1]
+    	fillPesanan()
+    }
+
+    function fillMenu(){
+    	var html = ''
+
+    	const lsKategori = [
+		  ...document.querySelectorAll('[type="checkbox"]:checked')
+		].map(el => el.value);
+                
+        for (var i = 0; i < filterMenu.length; i++) {
+        	
+        	var kategori = filterMenu[i].kategori
+        	//console.log(lsKategori, kategori, lsKategori.includes(kategori))
+        	if(lsKategori.includes(kategori)){
+        		if(keys == ""){
+	        		html = html + `<div class="col-md-4">
+							<div class="card border-0 shadow">
+								<div class="d-flex justify-content-center align-items-center overflow-hidden" style="max-height: 20vh;border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
+							  		<img src="/uploads/menu/${filterMenu[i].gambar}" class="card-img-top" alt="...">
+							  	</div>
+							  	<div class="card-body">
+							    	<div class="d-flex gap-2">
+							    		<button onclick="addPesanan(${menu[i].id})" class="btn btn-secondary"><i class="fa fa-plus"></i></button>
+							    		<div class="d-grid">
+							    			<span class="h5">${filterMenu[i].nama_produk}</span>
+							    			<label>Rp.${(filterMenu[i].harga).toLocaleString()}</label>
+							    		</div>	
+							    	</div>
+							  	</div>
+							</div>
+						</div>`;
+	        	}else{
+	        		if(filterMenu[i].nama_produk.includes(keys)){
+		        		html = html + `<div class="col-md-4">
+							<div class="card border-0 shadow">
+								<div class="d-flex justify-content-center align-items-center overflow-hidden" style="max-height: 20vh;border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
+							  		<img src="/uploads/menu/${menu[i].gambar}" class="card-img-top" alt="...">
+							  	</div>
+							  	<div class="card-body">
+							    	<div class="d-flex gap-2">
+							    		<button onclick="addPesanan()" class="btn btn-secondary"><i class="fa fa-plus"></i></button>
+							    		<div class="d-grid">
+							    			<span class="h5">${menu[i].nama_produk}</span>
+							    			<label>Rp.${(menu[i].harga).toLocaleString()}</label>
+							    		</div>	
+							    	</div>
+							  	</div>
+							</div>
+						</div>`;
+		        	}	
+	        	}
+        	}
+        	
+        	
+        }
+        //console.log(html)
+        document.getElementById("lsMenu").innerHTML = html;  
+    }
+
+    function groupPesanan(item){
+    	var bungkusan = item.reduce((acc, {id, nama_produk, harga, gambar}) => 
+			{
+			  acc[id] = acc[id] || {id: id, nama_produk: nama_produk, gambar: gambar, harga: harga, total: 0, jumlah: 0};
+			  // The more elegant way: acc[languageId] ??= {name: languageId, count: 0};
+			  acc[id]['jumlah'] += 1;
+			  acc[id]['total'] += harga
+			  return acc;
+			}, {});
+
+    	var obj = Object.values(bungkusan)
+
+    	return obj
+    }
+
+    function fillPesanan(){
+    	var html =""
+    	var totalBayar = 0;
+
+    	var obj = groupPesanan(lsPesanan)
+    	
+    	for (var i = 0; i < obj.length; i++) {
+    		totalBayar = totalBayar + obj[i].total
+    		html = html + `<div class="bg-white p-2 rounded small">
+								<div class="row g-1">
+								    <div class="col-md-2">
+								      	<img src="/uploads/menu/${obj[i].gambar}" class="img-fluid rounded-start" alt="...">
+								    </div>
+								    <div class="col">
+								    	<div class="d-grid">
+									      	<span class="card-title mb-2">${obj[i].nama_produk}</span>
+									      	<div class="block">
+										      	<div class="input-group input-group-sm">
+										      		<button class="btn btn-sm btn-outline-secondary m-0" type="button" onclick="addPesanan(${obj[i].id})"><i class="fa fa-plus"></i></button>
+												  	<input type="text" aria-label="First name" class="form-control" value="${obj[i].jumlah}">
+												  	<button class="btn btn-sm btn-outline-secondary m-0" type="button" onclick="delPesanan(${obj[i].id})"><i class="fa fa-minus"></i></button>
+												</div>
+											</div>
+										</div>
+								    </div>
+								    <div class="col d-flex justify-content-end align-items-center">
+								      	<span class="text-sm">Rp.${(obj[i].total).toLocaleString()}</span>
+								    </div>
+								</div>
+							</div>`;
+		}
+		document.getElementById('listPesanan').innerHTML = html
+		document.getElementById('totalBayar').innerHTML = `Rp.${(totalBayar).toLocaleString()}`
+    }
 </script>

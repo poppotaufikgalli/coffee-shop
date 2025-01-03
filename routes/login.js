@@ -23,11 +23,13 @@ passport.use(new LocalStrategy(function verify(username, password, cb) {
         }
 
         const user = result[0]
+        //console.log(user)
         
         crypto.pbkdf2(password, user.salt, 10000, 512, 'sha512', function(err, hashedPassword) {
             if (err) { return cb(err); }
+            //console.log(user.hash.toString(), hashedPassword.toString('hex'))
             if (user.hash.toString() !== hashedPassword.toString('hex')) {
-              return cb(null, false, { message: 'Incorrect username or password.' });
+              return cb(null, false, { message: 'Incorrect username or password..' });
             }
             return cb(null, user);
         });

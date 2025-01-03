@@ -13,10 +13,12 @@
                 <label for="username" class="form-label">Username</label>
                 <input type="text" class="form-control" id="username" name="username" required>
             </div>
+            <% if(id == undefined){ %>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
+            <% } %>
             <div class="mb-3">
                 <label for="role" class="form-label">Role/Group</label>
                 <select class="form-control" id="role" name="role" required>
@@ -36,8 +38,33 @@
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Simpan</button>
                 <a href="/data-karyawan" class="btn btn-outline-secondary">Batal</a>
+                <button type="button" class="btn btn-danger float-end" data-bs-toggle="modal" data-bs-target="#modalGantiPassword">Ganti Password</button>
             </div>
         </form>
+    </div>
+    <div class="modal fade" id="modalGantiPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ganti Password</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="password1" class="form-label">Password Baru</label>
+                        <input type="password" class="form-control" id="password1" name="password1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password2" class="form-label">Ulangi Password Baru</label>
+                        <input type="password" class="form-control" id="password2" name="password2" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCloseModal" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnResetPassword">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -50,25 +77,55 @@
     window.addEventListener("DOMContentLoaded", function () {
         var id = "<%= id %>";
         if(id){
-            //document.getElementById("frmMenu").setAttribute("act", "put")
             $.ajax({
-                url: "/api/menu/"+id,
+                url: "/api/karyawan/"+id,
                 type: "get",
                 //data: {'id': data.id},
                 success: function (d) {
                     const {data} = d
-                    document.getElementById("nama_produk").value = data.nama_produk    
-                    document.getElementById("kategori").value = data.kategori    
-                    document.getElementById("harga").value = data.harga    
-                    document.getElementById("output").src = '/uploads/menu/'+data.gambar 
+                    document.getElementById("nama_karyawan").value = data.nama_karyawan
+                    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                    var tgl_mulai = new Date(data.tanggal_mulai).toLocaleDateString('en-GB').split('/').reverse().join('-')
+                    console.log(tgl_mulai)
+                    document.getElementById("tanggal_mulai").value = tgl_mulai
+                    
+                    document.getElementById("username").value = data.username
+                    document.getElementById("role").value = data.role
+                    document.getElementById("output").src = '/uploads/karyawan/'+data.foto 
                 }
             });
+
+            document.getElementById('btnResetPassword').addEventListener('click', function(e){
+                var pass1 = document.getElementById('password1').value
+                var pass2 = document.getElementById('password2').value
+
+                if(pass1 == pass2 && pass1 != "" && pass2 != ""){
+                    $.ajax({
+                        url: "/api/reset-password/"+id,
+                        type: "post",
+                        data: {'password': pass1},
+                        success: function (d) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Password Berhasil di Ganti',
+                                icon: 'success',
+                                confirmButtonText: 'Ok'
+                            })
+
+                            document.getElementById("btnCloseModal").click()
+                            document.getElementById('password1').value = ""
+                            document.getElementById('password2').value = ""
+                        }
+                    });
+                }else{
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Data pergantian Password tidak lengkap',
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    })
+                }
+            })
         }
     });
-     
-    function search(dt, el) {
-        if (dt.search() !== el.value) {
-            dt.search(el.value).draw();
-        }
-    }
 </script>

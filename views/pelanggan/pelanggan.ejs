@@ -1,86 +1,97 @@
-<div class="content">
-    <div class="section">
-        <button class="btn-add">
-            <i class="fas fa-plus">
-            </i>
-            ADD NEW
-        </button>
-        <table class="table" id="myTable">
+<div class="card border-0 shadow">
+    <div class="card-body">
+        <div class="d-flex mb-4">
+            <a class="btn btn-sm btn-primary" href="/form-pelanggan">
+                <i class="fas fa-plus"></i> ADD NEW
+            </a>
+        </div>
+        <table class="table small" id="myTable">
             <thead>
                 <tr>
-                    <th>
-                        <input type="checkbox" />
-                    </th>
-                    <th>
-                        id pelanggan
-                        <i class="fas fa-sort">
-                        </i>
-                    </th>
-                    <th>
-                        nama pelanggan
-                    </th>
-                    <th>
-                        Foto Pelanggan
-                    </th>
-                    <th>
-                        tgl kunjungan
-                    </th>
-                    <th>
-                        klasifikasi
-                    </th>
-                    <th>
-                        Action
-                    </th>
+                    <th><input type="checkbox" /></th>
+                    <th>Kode Pelanggan</th>
+                    <th>Nama Pelanggan</th>
+                    <th>Foto Pelanggan</th>
+                    <th>Tgl Kunjungan</th>
+                    <th>Klasifikasi</th>
+                    <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <input type="checkbox" />
-                    </td>
-                    <td>
-                        id pelanggan
-                    </td>
-                    <td>
-                        nama pelanggan
-                    </td>
-                    <td>
-                        <img alt="Customer photo" height="40" src="https://storage.googleapis.com/a1aa/image/dYADPMLldA52G1h69xVmPekqLfcXrcxYcpH5202KmgryPj6TA.jpg" width="40" />
-                    </td>
-                    <td>
-                        XXXX
-                    </td>
-                    <td>
-                        sangat loyal
-                    </td>
-                    <td>
-                        <button class="btn btn-edit">
-                            <i class="fas fa-edit">
-                            </i>
-                        </button>
-                        <button class="btn btn-delete">
-                            <i class="fas fa-trash">
-                            </i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>
 <script type="text/javascript">
     window.addEventListener("DOMContentLoaded", function () {
-       
-        let table = new DataTable("#myTable", {
-            initComplete: function () {}
-            // Apply the search
+        let table = new DataTable('#myTable', {
+            ajax: {
+                url: '/api/pelanggan',
+                contentType: 'application/json',
+                type: 'GET',
+                data: function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            columns: [
+                {
+                    data: null,
+                    defaultContent: '<input type="checkbox" />'
+                },
+                { data: 'kode_pelanggan' },
+                { data: 'nama_pelanggan' },
+                { 
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        var image = `<img src="/dataset/${data.foto_pelanggan}" class="img-fluid" >`;
+                        return data.foto_pelanggan != undefined ? image : "";
+                    }
+                },
+                { data: 'tgl_kunjungan' },
+                { data: 'klasifikasi' },
+                { 
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        var btnGroup = `<div class="btn-group">`;
+                        btnGroup = btnGroup + `<button class="btn btn-sm btn-primary editButton"><i class="fas fa-edit"></i></button>`;
+                        btnGroup = btnGroup + `<button class="btn btn-sm btn-danger deleteButton"><i class="fas fa-trash"></i></button>`;
+                        btnGroup = btnGroup + `</div>`;
+                        return btnGroup;
+                    }
+                }
+            ]
+        });
+
+        table.on('click', '.editButton', function() {
+            var data = table.row( $(this).parents('tr') ).data();
+            console.log(data)
+            window.location.href = "/form-pelanggan/"+data.id_pelanggan
+        });
+
+        table.on('click', '.deleteButton', function() {
+            var data = table.row( $(this).parents('tr') ).data();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!"+data.id_pelanggan,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/api/delete-pelanggan/",
+                        type: "POST",
+                        data: {'id': data.id_pelanggan},
+                        success: function () {
+                            Swal.fire("Done!","It was succesfully deleted!","success");
+                            table.ajax.reload();
+                        }
+                    });
+                }
+            });
+            //console.log(data)
             
         });
     });
-     
-    function search(dt, el) {
-        if (dt.search() !== el.value) {
-            dt.search(el.value).draw();
-        }
-    }
 </script>

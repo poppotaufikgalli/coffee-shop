@@ -1,42 +1,61 @@
 var express = require('express');
 var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
-var db = require('../config/database');
+//var db = require('../config/database');
+const table = require('../models/TableData')
 var ensureLoggedIn = ensureLogIn();
 
 var router = express.Router();
 
-router.use(ensureLoggedIn)
+//router.use(ensureLoggedIn)
+
 /* GET home page. */
-router.get(['/', '/dashboard'], function(req, res, next) {
-  return res.render('dashboard', {
-    title: 'Dashboard'
-  }); 
+router.post('/api/pesanan', async function(req, res, next) {
+  const {transaksi, id_pelanggan} = req.body;
+   //console.log(data)
+  // 1.create transaksi
+
+  /*var transaksi = {
+    "id_pelanggan": id_pelanggan,
+    "subtotal": tanggal_mulai,
+    "diskon": username,
+    "total": hash,
+    "id_program_loyalitas": salt,
+    "created_uid": uid,
+  }
+
+  await table.Create("transaksi", transaksi)
+
+  var detail = {
+    "nama_karyawan": nama_karyawan,
+    "tanggal_mulai": tanggal_mulai,
+    "username": username,
+    "hash": hash,
+    "salt": salt,
+    "role": role,
+    "created_uid": uid,
+  }
+
+  await table.Create("transaksi_detail", detail)*/
+
+  return res.json({ data: transaksi })
 });
 
-router.route('/kasir')
-  .get(function (req, res) {
-    db.query('SELECT * FROM menu', function(err, results) {
-        /*if (err) { 
-          return res.json({ ok: false, data: [] })
-        }
-        if (!results || results.length == 0) {
-          return res.json({ ok: false, data: [] })
-        }*/
-        
-        res.render('kasir/kasir', {
-          title: 'Kas Register',
-          layout: 'layouts/kasir',
-          data: results
-        });
-    });
+router.get('/kasir/:id?', async function(req, res) {
+  var id = req.params.id
 
-    
-  })
-  .post(function (req, res) {
-    res.send('Add a book')
-  })
-  .put(function (req, res) {
-    res.send('Update the book')
+  var menu_kategori = await table.All('menu_kategori')
+  var pelanggan = null
+  if(id){
+    pelanggan = await table.Find('pelanggan', {id_pelanggan: id})
+  }
+  console.log(pelanggan)
+  res.render('kasir/kasir', {
+    title: 'Kasir Register',
+    layout: 'layouts/kasir',
+    menu_kategori: menu_kategori,
+    id: id,
+    pelanggan: pelanggan,
   });
+});
 
 module.exports = router;

@@ -8,7 +8,7 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 var session = require('express-session');
-//const crypto = require('crypto');
+const crypto = require('crypto');
 //var logger = require('morgan');
 const passport = require('passport')
 //const {loginCheck} = require('./auth/passport')
@@ -19,6 +19,8 @@ const passport = require('passport')
 
 //const { Canvas, Image, ImageData } = canvas;
 //faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
+var db = require('./config/database');
+const table = require('./models/TableData')
 
 const app = express();
 const port = 3000;
@@ -44,7 +46,7 @@ const sessionOptions = {
   saveUninitialized: false, // don't create session until something stored
   secret: 'shhhh, very secret',
   cookie: {
-    maxAge: 3600000,
+    maxAge: 36000000,
   },
 };
 
@@ -243,25 +245,33 @@ app.get('/transaksi', (req, res) => {
 });*/
 
 // Mengambil ID dengan validasi file di folder dataset
-app.get('/get-ids', (req, res) => {
-  const sql = 'SELECT idfoto FROM customers';
+app.get('/get-ids', async(req, res) => {
+  const sql = 'SELECT foto_pelanggan FROM pelanggan';
 
-  db.query(sql, (err, results) => {
+  var results = await table.All('pelanggan')
+  //console.log(results)
+
+  const validIds = results
+      .map(row => row.foto_pelanggan)
+      //.filter(id => fs.existsSync(path.join(__dirname, 'public', 'dataset', `${id}.jpg`))); // Validasi file
+      .filter(kode_pelanggan => fs.existsSync(path.join(__dirname, 'public', 'dataset', `${kode_pelanggan}`))); // Validasi file
+
+      console.log(validIds)
+
+    res.json(validIds);
+
+  /*db.query(sql, (err, results) => {
     if (err) {
       console.error('Error fetching ids:', err);
       return res.status(500).send('Error fetching ids');
     }
 
-    const validIds = results
-      .map(row => row.idfoto)
-      .filter(id => fs.existsSync(path.join(__dirname, 'public', 'dataset', `${id}.jpg`))); // Validasi file
-
-    res.json(validIds);
-  });
+    
+  });*/
 });
 
-/*app.get('/user-info/:idfoto', (req, res) => {
-  const sql = 'SELECT * FROM user WHERE idfoto = ?';
+app.get('/user-info/:idfoto', (req, res) => {
+  const sql = 'SELECT * FROM pelanggan WHERE foto_pelanggan = ?';
   
   db.query(sql, [req.params.idfoto], (err, results) => {
     if (err) {
@@ -274,7 +284,7 @@ app.get('/get-ids', (req, res) => {
       res.json(null);
     }
   });
-});*/
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

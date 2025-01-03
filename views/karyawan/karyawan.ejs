@@ -39,7 +39,12 @@
                 },
                 { data: 'nama_karyawan' },
                 { data: 'tanggal_mulai' },
-                { data: 'tanggal_mulai' },
+                { 
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        return data.status == 1 ? 'Aktif' : '-';
+                    }
+                },
                 { data: 'username' },
                 { 
                     data: null,
@@ -57,7 +62,7 @@
         table.on('click', '.editButton', function() {
             var data = table.row( $(this).parents('tr') ).data();
             console.log(data)
-            window.location.href = "/form-menu/"+data.id
+            window.location.href = "/form-karyawan/"+data.id_karyawan
         });
 
         table.on('click', '.deleteButton', function() {
@@ -72,11 +77,11 @@
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    //window.location.href = "/delete-menu/"+data.id    
+                    //window.location.href = "/delete-karyawan/"+data.id    
                     $.ajax({
-                        url: "/api/delete-menu/",
+                        url: "/api/delete-karyawan/",
                         type: "POST",
-                        data: {'id': data.id},
+                        data: {'id': data.id_karyawan},
                         success: function () {
                             Swal.fire("Done!","It was succesfully deleted!","success");
                             table.ajax.reload();
