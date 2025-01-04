@@ -1,6 +1,6 @@
 var express = require('express');
 var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
-//var db = require('../config/database');
+const _ = require('lodash')
 const table = require('../models/TableData')
 var ensureLoggedIn = ensureLogIn();
 
@@ -14,16 +14,21 @@ router.post('/api/pesanan', async function(req, res, next) {
    //console.log(data)
   // 1.create transaksi
 
-  /*var transaksi = {
+  var subtotal = _.sumBy(transaksi, function(o){
+    return o.total *1
+  })
+  //console.log(total)
+
+  var dtTransaksi = {
     "id_pelanggan": id_pelanggan,
-    "subtotal": tanggal_mulai,
-    "diskon": username,
-    "total": hash,
-    "id_program_loyalitas": salt,
+    "subtotal": subtotal,
+    "diskon": 0,
+    "total": 0,
+    "id_program_loyalitas": 0,
     "created_uid": uid,
   }
 
-  await table.Create("transaksi", transaksi)
+  /*await table.Create("transaksi", transaksi)
 
   var detail = {
     "nama_karyawan": nama_karyawan,

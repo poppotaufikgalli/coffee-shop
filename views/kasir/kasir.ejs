@@ -196,6 +196,7 @@
 	                        },
 	                        success: function (d) {
 	                        	console.log(d)
+	                        	var text = JSON.parse(d)
 	                            Swal.fire("Done!","It was succesfully deleted!","success");
 	                            //table.ajax.reload();
 	                        }

@@ -92,6 +92,7 @@ console.log(a.Delete(
 ))*/
 
 app.use('/', require('./routes/login'))
+app.use('/', require('./routes/loyalitas'))
 app.use('/', require('./routes/karyawan'))
 app.use('/', require('./routes/menu'))
 app.use('/', require('./routes/pelanggan'))

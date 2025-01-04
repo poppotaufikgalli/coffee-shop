@@ -6,6 +6,7 @@
     <ul class="menu">
         <%if(locals.user){ %>
             <li><a class="<%= title == 'Dashboard' ? 'active' : '' %>" href="/dashboard"><i class="fa-solid fa-circle-dot"></i> Dashboard</a></li>
+            <li><a class="<%= title == 'Loyalitas' ? 'active' : '' %>" href="/program-loyalitas"><i class="fa-solid fa-circle-dot"></i> Program Loyalitas</a></li>
             <li><a class="<%= title == 'Data Transaksi' ? 'active' : '' %>" href="/data-transaksi"><i class="fa-solid fa-circle-dot"></i> Data Transaksi</a></li>
             <li><a class="<%= title == 'Data Pelanggan' ? 'active' : '' %>" href="/data-pelanggan"><i class="fa-solid fa-circle-dot"></i> Data Pelanggan</a></li>
             <li><a class="<%= title == 'Data Menu' ? 'active' : '' %>" href="/data-menu"><i class="fa-solid fa-circle-dot"></i> Data Menu</a></li>

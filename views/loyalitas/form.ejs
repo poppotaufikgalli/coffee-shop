@@ -1,0 +1,135 @@
+<div class="card">
+    <div class="card-body">
+        <form id="frmMenu" method="post" action="/data-karyawan/<%= id %>" enctype="multipart/form-data"> 
+            <div class="mb-3">
+                <label for="keterangan" class="form-label">Keterangam</label>
+                <input type="text" class="form-control" id="keterangan" name="keterangan" required>
+            </div>
+            <div class="mb-3">
+                <label for="priode_mulai" class="form-label">Priode</label>
+                <div class="input-group">
+                    <input type="date" class="form-control" id="priode_mulai" name="priode_mulai" required>
+                    <span class="input-group-text">s.d</span>
+                    <input type="date" class="form-control" id="priode_akhir" name="priode_akhir" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <% if(id == undefined){ %>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <% } %>
+            <div class="mb-3">
+                <label for="role" class="form-label">Role/Group</label>
+                <select class="form-control" id="role" name="role" required>
+                    <option value="" selected disabled>pilih Role/Group</option>
+                    <% if( typeof kategori !== 'undefined') { %>
+                        <% kategori.forEach(function(item){ %>
+                            <option value="<%= item.id %>"><%= item.nama_kategori %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="foto" class="form-label">Gambar</label>
+                <input type="file" class="form-control" id="foto" name="foto" accept="image/gif, image/jpeg, image/png" onchange="loadFile(event)">
+                <img id="output" width="200" class="img-fluid mt-4" />
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                <a href="/data-karyawan" class="btn btn-outline-secondary">Batal</a>
+                <button type="button" class="btn btn-danger float-end" data-bs-toggle="modal" data-bs-target="#modalGantiPassword">Ganti Password</button>
+            </div>
+        </form>
+    </div>
+    <div class="modal fade" id="modalGantiPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ganti Password</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="password1" class="form-label">Password Baru</label>
+                        <input type="password" class="form-control" id="password1" name="password1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password2" class="form-label">Ulangi Password Baru</label>
+                        <input type="password" class="form-control" id="password2" name="password2" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCloseModal" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnResetPassword">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var loadFile = function(event) {
+        var image = document.getElementById('output');
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
+
+    window.addEventListener("DOMContentLoaded", function () {
+        var id = "<%= id %>";
+        if(id){
+            $.ajax({
+                url: "/api/karyawan/"+id,
+                type: "get",
+                //data: {'id': data.id},
+                success: function (d) {
+                    const {data} = d
+                    document.getElementById("nama_karyawan").value = data.nama_karyawan
+                    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                    var tgl_mulai = new Date(data.tanggal_mulai).toLocaleDateString('en-GB').split('/').reverse().join('-')
+                    console.log(tgl_mulai)
+                    document.getElementById("tanggal_mulai").value = tgl_mulai
+                    
+                    document.getElementById("username").value = data.username
+                    document.getElementById("role").value = data.role
+                    document.getElementById("output").src = '/uploads/karyawan/'+data.foto 
+                }
+            });
+
+            document.getElementById('btnResetPassword').addEventListener('click', function(e){
+                var pass1 = document.getElementById('password1').value
+                var pass2 = document.getElementById('password2').value
+
+                if(pass1 == pass2 && pass1 != "" && pass2 != ""){
+                    $.ajax({
+                        url: "/api/reset-password/"+id,
+                        type: "post",
+                        data: {'password': pass1},
+                        success: function (d) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Password Berhasil di Ganti',
+                                icon: 'success',
+                                confirmButtonText: 'Ok'
+                            })
+
+                            document.getElementById("btnCloseModal").click()
+                            document.getElementById('password1').value = ""
+                            document.getElementById('password2').value = ""
+                        }
+                    });
+                }else{
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Data pergantian Password tidak lengkap',
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    })
+                }
+            })
+        }
+    });
+</script>
