@@ -2,42 +2,30 @@
     <div class="card-body">
         <form id="frmMenu" method="post" action="/data-karyawan/<%= id %>" enctype="multipart/form-data"> 
             <div class="mb-3">
-                <label for="keterangan" class="form-label">Keterangam</label>
+                <label for="keterangan" class="form-label">Keterangan</label>
                 <input type="text" class="form-control" id="keterangan" name="keterangan" required>
             </div>
             <div class="mb-3">
-                <label for="priode_mulai" class="form-label">Priode</label>
+                <label for="priode" class="form-label">Priode Data</label>
                 <div class="input-group">
-                    <input type="date" class="form-control" id="priode_mulai" name="priode_mulai" required>
+                    <input type="date" class="form-control" id="awal" name="awal" required>
                     <span class="input-group-text">s.d</span>
-                    <input type="date" class="form-control" id="priode_akhir" name="priode_akhir" required>
+                    <input type="date" class="form-control" id="akhir" name="akhir" required>
+                    <button class="btn btn-primary">Cari</button>
                 </div>
             </div>
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <% if(id == undefined){ %>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <% } %>
-            <div class="mb-3">
-                <label for="role" class="form-label">Role/Group</label>
-                <select class="form-control" id="role" name="role" required>
-                    <option value="" selected disabled>pilih Role/Group</option>
-                    <% if( typeof kategori !== 'undefined') { %>
-                        <% kategori.forEach(function(item){ %>
-                            <option value="<%= item.id %>"><%= item.nama_kategori %></option>
-                        <% }); %>
-                    <% } %>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="foto" class="form-label">Gambar</label>
-                <input type="file" class="form-control" id="foto" name="foto" accept="image/gif, image/jpeg, image/png" onchange="loadFile(event)">
-                <img id="output" width="200" class="img-fluid mt-4" />
+            <div class="card card-body mb-3">
+                <table class="table small" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>Nama Pelanggan</th>
+                            <th>Total Kunjungan</th>
+                            <th>Total Transaksi</th>
+                            <th>Kategori</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Simpan</button>
@@ -73,63 +61,27 @@
 </div>
 
 <script type="text/javascript">
-    var loadFile = function(event) {
-        var image = document.getElementById('output');
-        image.src = URL.createObjectURL(event.target.files[0]);
-    };
-
     window.addEventListener("DOMContentLoaded", function () {
-        var id = "<%= id %>";
-        if(id){
-            $.ajax({
-                url: "/api/karyawan/"+id,
-                type: "get",
-                //data: {'id': data.id},
-                success: function (d) {
-                    const {data} = d
-                    document.getElementById("nama_karyawan").value = data.nama_karyawan
-                    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-                    var tgl_mulai = new Date(data.tanggal_mulai).toLocaleDateString('en-GB').split('/').reverse().join('-')
-                    console.log(tgl_mulai)
-                    document.getElementById("tanggal_mulai").value = tgl_mulai
-                    
-                    document.getElementById("username").value = data.username
-                    document.getElementById("role").value = data.role
-                    document.getElementById("output").src = '/uploads/karyawan/'+data.foto 
-                }
-            });
+        var sekarang = new Date()
+        document.getElementById('awal').valueAsDate = sekarang;
+        document.getElementById('akhir').valueAsDate = sekarang;
 
-            document.getElementById('btnResetPassword').addEventListener('click', function(e){
-                var pass1 = document.getElementById('password1').value
-                var pass2 = document.getElementById('password2').value
-
-                if(pass1 == pass2 && pass1 != "" && pass2 != ""){
-                    $.ajax({
-                        url: "/api/reset-password/"+id,
-                        type: "post",
-                        data: {'password': pass1},
-                        success: function (d) {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Password Berhasil di Ganti',
-                                icon: 'success',
-                                confirmButtonText: 'Ok'
-                            })
-
-                            document.getElementById("btnCloseModal").click()
-                            document.getElementById('password1').value = ""
-                            document.getElementById('password2').value = ""
-                        }
-                    });
-                }else{
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Data pergantian Password tidak lengkap',
-                        icon: 'error',
-                        confirmButtonText: 'Ok'
-                    })
-                }
-            })
-        }
+        let table = new DataTable('#myTable', {
+            ajax: {
+                url: '/api/kunjungan',
+                type: 'POST',
+                data: {
+                    'awal': sekarang.toISOString().split('T')[0],
+                    'akhir': sekarang.toISOString().split('T')[0],
+                },
+            },
+            order: [[1, 'desc']],
+            columns: [
+                { data: 'nama_pelanggan' },
+                { data: 'total_kunjungan' },
+                { data: 'total_transaksi' },
+                { data: 'kategori' },
+            ]
+        });
     });
 </script>
