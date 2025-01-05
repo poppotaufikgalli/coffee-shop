@@ -21,10 +21,10 @@ let upload = multer({
 
 router.get('/api/pelanggan/:id?', async function(req, res) {
   var id = req.params.id
-  //var sql = `select pelanggan.* from karyawan left join role on (karyawan.role = role.id) where karyawan.status =1`
+  var sql = `select pelanggan.*, coalesce(loyalitas.klasifikasi, "Baru") as loyalitas_klasifikasi from pelanggan left join loyalitas on (pelanggan.klasifikasi = loyalitas.id_loyalitas) where pelanggan.status =1`
   if(id == null){
-    //var results = await table.Query(sql);
-    var results = await table.All('pelanggan');
+    var results = await table.Query(sql);
+    //var results = await table.All('pelanggan');
     return res.json({ data: results })
   }else{
     var results = await table.Find('pelanggan', {'id_pelanggan': id});

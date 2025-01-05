@@ -1,16 +1,16 @@
 <div class="card border-0 shadow">
     <div class="card-body">
         <div class="d-flex mb-4">
-            <a class="btn btn-sm btn-primary" href="/form-loyalitas">
-                <i class="fas fa-plus"></i> ADD NEW
+            <a class="btn btn-sm btn-primary" href="/cari-pelanggan-loyalitas">
+                <i class="fas fa-search"></i> Cari Data Pelanggan
             </a>
         </div>
         <table class="table" id="myTable">
             <thead>
                 <tr>
                     <th><input type="checkbox" /></th>
-                    <th>Periode</th>
                     <th>Klasifikasi</th>
+                    <th>Periode</th>
                     <th>Diskon</th>
                     <th>Keterangan</th>
                     <th>Action</th>
@@ -37,17 +37,32 @@
                     data: null,
                     defaultContent: '<input type="checkbox" />'
                 },
-                { data: 'priode' },
                 { data: 'klasifikasi' },
-                { data: 'diskon' },
+                { 
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        var priode_awal = "";
+                        var priode_akhir= "";
+                        if(data.priode_awal != null){
+                            priode_awal = (new Date(data.priode_awal).toJSON().slice(0,10).split('-').reverse().join('-'))
+                        }
+                        if (data.priode_akhir != null){
+                            var priode_akhir = (new Date(data.priode_akhir).toJSON().slice(0,10).split('-').reverse().join('-'))
+                        }
+                        return priode_awal +" s/d "+ priode_akhir;
+                    }
+                },
+                { 
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        return data.diskon +"%";
+                    }
+                },
                 { data: 'keterangan' },
                 { 
                     data: null,
                     render: function (data, type, row, meta) {
-                        var btnGroup = `<div class="btn-group">`;
-                        btnGroup = btnGroup + `<button class="btn btn-sm btn-primary editButton"><i class="fas fa-edit"></i></button>`;
-                        btnGroup = btnGroup + `<button class="btn btn-sm btn-danger deleteButton"><i class="fas fa-trash"></i></button>`;
-                        btnGroup = btnGroup + `</div>`;
+                        var btnGroup = `<button class="btn btn-sm btn-primary editButton"><i class="fas fa-edit"></i></button>`;
                         return btnGroup;
                     }
                 }
@@ -58,34 +73,6 @@
             var data = table.row( $(this).parents('tr') ).data();
             console.log(data)
             window.location.href = "/form-loyalitas/"+data.id_loyalitas
-        });
-
-        table.on('click', '.deleteButton', function() {
-            var data = table.row( $(this).parents('tr') ).data();
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!"+data.id_loyalitas,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    //window.location.href = "/delete-loyalitas/"+data.id_loyalitas    
-                    $.ajax({
-                        url: "/api/delete-karyawan/",
-                        type: "POST",
-                        data: {'id': data.id_loyalitas},
-                        success: function () {
-                            Swal.fire("Done!","It was succesfully deleted!","success");
-                            table.ajax.reload();
-                        }
-                    });
-                }
-            });
-            //console.log(data)
-            
         });
     });
      

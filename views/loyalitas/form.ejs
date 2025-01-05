@@ -1,79 +1,66 @@
 <div class="card">
     <div class="card-body">
-        <form id="frmMenu" method="post" action="/data-karyawan/<%= id %>" enctype="multipart/form-data"> 
-            <div class="mb-3">
-                <label for="keterangan" class="form-label">Keterangan</label>
-                <input type="text" class="form-control" id="keterangan" name="keterangan" required>
+        <div class="mb-3">
+            <label for="priode" class="form-label">Priode Data</label>
+            <div class="input-group">
+                <input type="date" class="form-control" id="awal" name="awal" required>
+                <span class="input-group-text">s.d</span>
+                <input type="date" class="form-control" id="akhir" name="akhir" required>
+                <button class="btn btn-primary" onclick="seachData()">Cari</button>
             </div>
-            <div class="mb-3">
-                <label for="priode" class="form-label">Priode Data</label>
-                <div class="input-group">
-                    <input type="date" class="form-control" id="awal" name="awal" required>
-                    <span class="input-group-text">s.d</span>
-                    <input type="date" class="form-control" id="akhir" name="akhir" required>
-                    <button class="btn btn-primary">Cari</button>
-                </div>
-            </div>
-            <div class="card card-body mb-3">
-                <table class="table small" id="myTable">
-                    <thead>
-                        <tr>
-                            <th>Nama Pelanggan</th>
-                            <th>Total Kunjungan</th>
-                            <th>Total Transaksi</th>
-                            <th>Kategori</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Simpan</button>
-                <a href="/data-karyawan" class="btn btn-outline-secondary">Batal</a>
-                <button type="button" class="btn btn-danger float-end" data-bs-toggle="modal" data-bs-target="#modalGantiPassword">Ganti Password</button>
-            </div>
-        </form>
-    </div>
-    <div class="modal fade" id="modalGantiPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ganti Password</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="password1" class="form-label">Password Baru</label>
-                        <input type="password" class="form-control" id="password1" name="password1" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password2" class="form-label">Ulangi Password Baru</label>
-                        <input type="password" class="form-control" id="password2" name="password2" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="btnCloseModal" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="btnResetPassword">Save changes</button>
-                </div>
-            </div>
+        </div>
+        <div class="card card-body mb-3">
+            <table class="table small" id="myTable">
+                <thead>
+                    <tr>
+                        <th>Nama Pelanggan</th>
+                        <th>Total Kunjungan</th>
+                        <th>Total Pembelian</th>
+                        <th>Kategori</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" onclick="simpanData()">Simpan</button>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
+    var datafromtable = [];
     window.addEventListener("DOMContentLoaded", function () {
         var sekarang = new Date()
         document.getElementById('awal').valueAsDate = sekarang;
         document.getElementById('akhir').valueAsDate = sekarang;
+        
+        seachData()
+    });
+
+    function seachData(){
+        var awal = document.getElementById('awal').value;
+        var akhir = document.getElementById('akhir').value;
+        
 
         let table = new DataTable('#myTable', {
+            destroy: true,
             ajax: {
                 url: '/api/kunjungan',
                 type: 'POST',
                 data: {
-                    'awal': sekarang.toISOString().split('T')[0],
-                    'akhir': sekarang.toISOString().split('T')[0],
+                    'awal': awal,
+                    'akhir': akhir,
                 },
+            },
+            initComplete: function(settings, json) {
+                // Here i want to populate the child rows
+                // without showing the child rows, using data
+                // output from the above ajax function
+                // This returns nuthin (empty array):
+                //alert(json.data);
+                //console.log(json.data);
+                datafromtable = json.data
             },
             order: [[1, 'desc']],
             columns: [
@@ -83,5 +70,32 @@
                 { data: 'kategori' },
             ]
         });
-    });
+    }
+
+    function simpanData() {
+        console.log(datafromtable)
+
+        if(datafromtable.length > 0){
+            $.ajax({
+                url: "/api/simpan-klasifikasi",
+                type: "post",
+                data: {data: datafromtable},
+                success: function (d) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Data Berhasil disimpan',
+                        icon: 'success',
+                        confirmButtonText: 'Ok'
+                    })
+                }
+            });
+        }else{
+            Swal.fire({
+                title: 'Error!',
+                text: 'Data tidak tersedia',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+        }
+    }
 </script>

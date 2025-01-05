@@ -47,7 +47,12 @@
                     }
                 },
                 { data: 'tgl_kunjungan' },
-                { data: 'klasifikasi' },
+                { 
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        return data.loyalitas_klasifikasi;
+                    }
+                },
                 { 
                     data: null,
                     render: function (data, type, row, meta) {
