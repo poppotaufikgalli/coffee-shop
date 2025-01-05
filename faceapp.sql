@@ -62,11 +62,12 @@ DROP TABLE IF EXISTS `loyalitas`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `loyalitas` (
   `id_loyalitas` int NOT NULL AUTO_INCREMENT,
+  `klasifikasi` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `priode_awal` date DEFAULT NULL,
   `priode_akhir` date DEFAULT NULL,
-  `klasifikasi` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `diskon` int DEFAULT '1',
+  `diskon` int DEFAULT '0',
   `keterangan` text,
+  `status` int DEFAULT '1',
   `created_uid` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_uid` int DEFAULT NULL,
@@ -74,7 +75,7 @@ CREATE TABLE `loyalitas` (
   `deleted_uid` int DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id_loyalitas`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,7 +84,32 @@ CREATE TABLE `loyalitas` (
 
 LOCK TABLES `loyalitas` WRITE;
 /*!40000 ALTER TABLE `loyalitas` DISABLE KEYS */;
+INSERT INTO `loyalitas` VALUES (1,'Sangat Loyal','2025-01-05','2025-01-05',10,'dsa',1,NULL,'2025-01-05 13:30:14',1,'2025-01-05 13:52:07',NULL,NULL),(2,'Loyal',NULL,NULL,0,NULL,1,NULL,'2025-01-05 13:30:33',NULL,'2025-01-05 13:43:30',NULL,NULL),(3,'Tetap',NULL,NULL,0,NULL,1,NULL,'2025-01-05 13:30:36',NULL,'2025-01-05 13:43:30',NULL,NULL);
 /*!40000 ALTER TABLE `loyalitas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `loyalitas_kategori`
+--
+
+DROP TABLE IF EXISTS `loyalitas_kategori`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `loyalitas_kategori` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nama` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `loyalitas_kategori`
+--
+
+LOCK TABLES `loyalitas_kategori` WRITE;
+/*!40000 ALTER TABLE `loyalitas_kategori` DISABLE KEYS */;
+INSERT INTO `loyalitas_kategori` VALUES (1,'Sangat Loyal'),(2,'Loyal'),(3,'Tetap');
+/*!40000 ALTER TABLE `loyalitas_kategori` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -178,7 +204,7 @@ CREATE TABLE `pelanggan` (
 
 LOCK TABLES `pelanggan` WRITE;
 /*!40000 ALTER TABLE `pelanggan` DISABLE KEYS */;
-INSERT INTO `pelanggan` VALUES (1,'dasdas','dsad',NULL,NULL,NULL,1,NULL,'dsad',1,NULL,NULL,NULL,NULL),(2,'1','1',NULL,NULL,NULL,1,NULL,'1',1,NULL,NULL,NULL,NULL),(3,'23','ew',NULL,NULL,NULL,1,NULL,'dsa',1,NULL,NULL,NULL,NULL),(4,'dfsfsf','fdsfs',NULL,NULL,NULL,1,NULL,'fdsfs',1,NULL,NULL,NULL,NULL),(5,'1111','11112121',NULL,NULL,NULL,1,NULL,'sdadas',1,NULL,NULL,NULL,NULL),(6,'dsad','dsa',NULL,NULL,NULL,1,NULL,'dsa',1,NULL,NULL,NULL,NULL),(7,'sdsad','dsa',NULL,NULL,NULL,1,NULL,'dsa',1,NULL,NULL,NULL,NULL),(8,'444','dsa','444.jpeg',NULL,NULL,1,NULL,'121',1,NULL,NULL,NULL,NULL),(9,'112121','taufik','112121.jpeg',NULL,NULL,1,NULL,'111',1,NULL,NULL,NULL,NULL);
+INSERT INTO `pelanggan` VALUES (1,'001','joko','001.jpg',NULL,1,1,NULL,'dsad',1,1,NULL,NULL,NULL),(2,'002','andi','002.jpg',NULL,1,1,NULL,'1',1,1,NULL,NULL,NULL),(3,'003','adi','003.jpg',NULL,2,1,NULL,'dsa',1,1,NULL,NULL,NULL),(4,'004','indra','004.jpg',NULL,2,1,NULL,'fdsfs',1,1,NULL,NULL,NULL),(5,'005','ayu','005.jpg',NULL,3,1,NULL,'sdadas',1,1,NULL,NULL,NULL),(6,'006','ira','006.jpg',NULL,3,1,NULL,'dsa',1,1,NULL,NULL,NULL),(7,'007','tole','007.jpg',NULL,0,1,NULL,'dsa',1,1,NULL,NULL,NULL),(8,'444','dsa','444.jpeg',NULL,NULL,1,NULL,'121',1,NULL,NULL,NULL,NULL),(9,'112121','taufik','112121.jpeg',NULL,NULL,1,NULL,'111',1,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `pelanggan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,7 +255,7 @@ CREATE TABLE `transaksi` (
   `deleted_uid` int DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -238,6 +264,7 @@ CREATE TABLE `transaksi` (
 
 LOCK TABLES `transaksi` WRITE;
 /*!40000 ALTER TABLE `transaksi` DISABLE KEYS */;
+INSERT INTO `transaksi` VALUES (1,1,25000,0,25000,NULL,NULL,'2025-01-04 04:27:02',NULL,NULL,NULL,NULL),(2,1,25000,0,25000,NULL,NULL,'2025-01-04 04:27:02',NULL,NULL,NULL,NULL),(3,1,25000,0,25000,NULL,NULL,'2025-01-04 04:27:02',NULL,NULL,NULL,NULL),(4,1,25000,0,25000,NULL,NULL,'2025-01-04 04:27:02',NULL,NULL,NULL,NULL),(5,1,25000,0,25000,NULL,NULL,'2025-01-04 04:27:02',NULL,NULL,NULL,NULL),(6,2,27500,0,27500,NULL,NULL,'2025-01-04 04:27:47',NULL,NULL,NULL,NULL),(7,2,27500,0,27500,NULL,NULL,'2025-01-04 04:27:47',NULL,NULL,NULL,NULL),(8,2,27500,0,27500,NULL,NULL,'2025-01-04 04:27:47',NULL,NULL,NULL,NULL),(9,2,27500,0,27500,NULL,NULL,'2025-01-04 04:27:47',NULL,NULL,NULL,NULL),(10,3,20000,0,20000,NULL,NULL,'2025-01-04 04:28:17',NULL,NULL,NULL,NULL),(11,3,20000,0,20000,NULL,NULL,'2025-01-04 04:28:17',NULL,NULL,NULL,NULL),(12,3,10000,0,10000,NULL,NULL,'2025-01-04 04:28:17',NULL,NULL,NULL,NULL),(13,4,30000,0,30000,NULL,NULL,'2025-01-04 04:28:17',NULL,NULL,NULL,NULL),(14,4,30000,0,30000,NULL,NULL,'2025-01-04 04:28:17',NULL,NULL,NULL,NULL),(15,4,20000,0,20000,NULL,NULL,'2025-01-04 04:28:17',NULL,NULL,NULL,NULL),(16,5,50000,0,50000,NULL,NULL,'2025-01-04 04:28:17',NULL,NULL,NULL,NULL),(17,6,20000,0,20000,NULL,NULL,'2025-01-04 04:29:51',NULL,NULL,NULL,NULL),(18,7,10000,0,10000,NULL,NULL,'2025-01-04 04:29:59',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `transaksi` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -272,6 +299,38 @@ LOCK TABLES `transaksi_detail` WRITE;
 /*!40000 ALTER TABLE `transaksi_detail` DISABLE KEYS */;
 /*!40000 ALTER TABLE `transaksi_detail` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `v_kunjungan`
+--
+
+DROP TABLE IF EXISTS `v_kunjungan`;
+/*!50001 DROP VIEW IF EXISTS `v_kunjungan`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `v_kunjungan` AS SELECT 
+ 1 AS `id_pelanggan`,
+ 1 AS `total_kunjungan`,
+ 1 AS `total_pembelian`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Final view structure for view `v_kunjungan`
+--
+
+/*!50001 DROP VIEW IF EXISTS `v_kunjungan`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `v_kunjungan` AS select `transaksi`.`id_pelanggan` AS `id_pelanggan`,count(`transaksi`.`id_pelanggan`) AS `total_kunjungan`,sum(`transaksi`.`total`) AS `total_pembelian` from `transaksi` group by `transaksi`.`id_pelanggan` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -282,4 +341,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-04 10:21:42
+-- Dump completed on 2025-01-05 21:47:43
