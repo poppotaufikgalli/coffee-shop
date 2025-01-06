@@ -10,7 +10,8 @@ var router = express.Router();
 
 /* GET home page. */
 router.post('/api/pesanan', async function(req, res, next) {
-  const {transaksi, id_pelanggan} = req.body;
+  var uid = req.session.passport.user.id_karyawan
+  const {transaksi, id_pelanggan, klasifikasi, diskon} = req.body;
    //console.log(data)
   // 1.create transaksi
 
@@ -18,31 +19,41 @@ router.post('/api/pesanan', async function(req, res, next) {
     return o.total *1
   })
   //console.log(total)
+  var ndiskon = Math.round(subtotal * (diskon/100))
+  var ntotal = subtotal - ndiskon
 
   var dtTransaksi = {
     "id_pelanggan": id_pelanggan,
     "subtotal": subtotal,
-    "diskon": 0,
-    "total": 0,
-    "id_program_loyalitas": 0,
+    "diskon": ndiskon,
+    "total": ntotal,
+    "id_program_loyalitas": klasifikasi,
     "created_uid": uid,
+    "created_at": new Date(),
   }
 
-  /*await table.Create("transaksi", transaksi)
+  var result = await table.Create("transaksi", dtTransaksi)
+  //console.log(result)
+  
+  var detail = []
 
-  var detail = {
-    "nama_karyawan": nama_karyawan,
-    "tanggal_mulai": tanggal_mulai,
-    "username": username,
-    "hash": hash,
-    "salt": salt,
-    "role": role,
-    "created_uid": uid,
+  for (var i = 0; i < transaksi.length; i++) {
+    detail.push({
+      "id_transaksi" : result.insertId,
+      "id_menu": transaksi[i].id,
+      "jml": transaksi[i].jumlah,
+      "total": transaksi[i].total,
+      "created_uid": uid,  
+    })
   }
 
-  await table.Create("transaksi_detail", detail)*/
+  await table.BulkInsert("transaksi_detail", detail)
 
-  return res.json({ data: transaksi })
+  return res.json({ 
+    insertId: result.insertId, 
+    transaksi: transaksi,
+    dtTransaksi: dtTransaksi,
+  })
 });
 
 router.get('/kasir/:id?', async function(req, res) {
@@ -51,9 +62,18 @@ router.get('/kasir/:id?', async function(req, res) {
   var menu_kategori = await table.All('menu_kategori')
   var pelanggan = null
   if(id){
-    pelanggan = await table.Find('pelanggan', {id_pelanggan: id})
+    //var now = new Date().toLocaleString()
+    //console.log(now)
+    var todayDate = new Date().toISOString().slice(0, 10);
+    //var now = '2025-01-05'
+    var sql = `SELECT a.*, coalesce(b.diskon, 0) as diskon, coalesce(b.keterangan, "") as keterangan FROM pelanggan a left join loyalitas b on (a.klasifikasi = b.id_loyalitas and b.priode_awal <= '${todayDate}' and b.priode_akhir >= '${todayDate}') where a.id_pelanggan = ${id}`
+    console.log(sql)
+    var a = await table.Query(sql)
+    pelanggan = a[0]
+    console.log(pelanggan)
+    //pelanggan = await table.Find('pelanggan', {id_pelanggan: id})
   }
-  console.log(pelanggan)
+  //console.log(pelanggan)
   res.render('kasir/kasir', {
     title: 'Kasir Register',
     layout: 'layouts/kasir',

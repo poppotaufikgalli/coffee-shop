@@ -272,7 +272,7 @@ app.get('/get-ids', async(req, res) => {
 });
 
 app.get('/user-info/:idfoto', (req, res) => {
-  const sql = 'SELECT * FROM pelanggan WHERE foto_pelanggan = ?';
+  const sql = 'SELECT a.*, b.klasifikasi as loyalitas_klasifikasi FROM pelanggan a left join loyalitas b on (a.klasifikasi = b.id_loyalitas) WHERE a.foto_pelanggan = ?';
   
   db.query(sql, [req.params.idfoto], (err, results) => {
     if (err) {

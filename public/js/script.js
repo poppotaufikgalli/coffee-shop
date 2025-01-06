@@ -131,7 +131,7 @@ video.addEventListener('canplay', async () => {
                                 context.font = '24px Helvetica'; // Change font size and type here
                                 context.fillStyle = '#00ffd0';
                                 context.fillText(`- ${user.nama_pelanggan}`, box.x, box.y + box.height + 30); // Draw user info text below the detection box
-                                context.fillText(`- ${user.klasifikasi}`, box.x, box.y + box.height + 50); // Draw user info text below the detection box
+                                context.fillText(`- ${user.loyalitas_klasifikasi}`, box.x, box.y + box.height + 50); // Draw user info text below the detection box
                                 context.fillText(`- ${user.tgl_kunjungan}`, box.x, box.y + box.height + 70); // Draw user info text below the detection box
                             }
                         });
@@ -156,7 +156,7 @@ function addListPelanggan(user){
 
     var html = ''
     known.forEach(item => {
-        html = html + `<li><a href="/kasir/${item.id_pelanggan}">${item.nama_pelanggan}</a> / ${item.klasifikasi} / ${item.tgl_kunjungan}</li>`
+        html = html + `<li><a href="/kasir/${item.id_pelanggan}">${item.nama_pelanggan}</a> / ${item.loyalitas_klasifikasi} / ${item.tgl_kunjungan}</li>`
     })
 
     listPelanggan.innerHTML = html

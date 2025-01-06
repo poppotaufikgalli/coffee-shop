@@ -2,58 +2,24 @@ var express = require('express');
 var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
 var ensureLoggedIn = ensureLogIn();
 var router = express.Router();
-var db = require('../config/database');
+const table = require('../models/TableData')
 
-async function getData(id = null){
+router.get('/api/transaksi/:id?', async function(req, res) {
+  var id = req.params.id
+  var sql = `select transaksi.*, pelanggan.nama_pelanggan as nama_pelanggan, loyalitas.klasifikasi as nama_klasifikasi, loyalitas.priode_awal as priode_awal, loyalitas.priode_akhir as priode_akhir from transaksi left join pelanggan on (transaksi.id_pelanggan = pelanggan.id_pelanggan) left join loyalitas on (transaksi.id_program_loyalitas = loyalitas.id_loyalitas)`
   if(id == null){
-    db.query('SELECT * FROM transaksi', function(err, results) {
-        if (err) { 
-          return {
-            'ok' : false,
-          }; 
-        }
-        if (!results || results.length  == 0) {
-          return {
-            'ok' : false,
-          }; 
-        }
-        console.log(results)
-        return {
-          'ok' : true,
-          'data': results
-        }
-    });
+    var results = await table.Query(sql);
+    //var results = await table.All('transaksi');
+    return res.json({ data: results })
   }else{
-    db.query('SELECT * FROM transaksi where id', [id], function(err, results) {
-        if (err) { 
-          return {
-            'ok' : false,
-          }; 
-        }
-        if (!results || results.length  == 0) {
-          return {
-            'ok' : false,
-          }; 
-        }
-        
-        return {
-          'ok' : true,
-          'data': results[0]
-        }
-    });
+    var results = await table.Find('transaksi', {'id': id});
+    return res.json({ data: results })
   }
-}
+});
 
 router.get('/data-transaksi', async function(req, res) {
-  db.query('SELECT * FROM transaksi', function(err, results) {
-      if (err) { 
-        return res.status(504);
-      }
-     
-      res.render('transaksi/transaksi', {
-        title: 'Data Transaksi',
-        data: results,
-      });
+  res.render('transaksi/transaksi', {
+    title: 'Data Transaksi',
   });
 });
 

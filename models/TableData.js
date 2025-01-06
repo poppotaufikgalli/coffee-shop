@@ -53,7 +53,7 @@ const Find = (table, condition) => {
       
   }
   
-  console.log("sql", sql, _value)
+  //console.log("sql", sql, _value)
 
   return new Promise((resolve, reject) => {
     db.query(sql, _value, (err, rows, fields) => {
@@ -70,6 +70,7 @@ const Query = (queryString, condition) => {
   var sql = queryString;
   var _value = [];
   if(condition){
+    //console.log(condition)
     var _where = _.join(_.map(condition, function(v, k){
       return k + "= ?"
     }),' and ');
@@ -77,11 +78,12 @@ const Query = (queryString, condition) => {
     _value = _.values(condition)
 
     sql = _.join(_.compact([sql, _where]), ' where ');
+    //console.log(sql)
       
   }
 
   return new Promise((resolve, reject) => {
-    db.query(sql, (err, rows, fields) => {
+    db.query(sql, _value, (err, rows, fields) => {
       if(err)
         reject(err);
       else
@@ -110,11 +112,29 @@ const Create = (table, fields) => {
   }
 
   return new Promise((resolve, reject) => {
-    db.query(sql, _value, (err) => {
+    db.query(sql, _value, (err, result, fields) => {
       if(err)
         reject(err);
       else
-        resolve();
+        resolve(result);
+    });
+  });
+};
+
+const BulkInsert = (table, fields) => {
+  
+  
+  let columnNames = _.keys(fields[0])
+  const _values = fields.reduce((a,i) => [...a, _.values(i)], [])
+
+  var sql = `INSERT INTO ${table} (${columnNames.join(',')}) values ?`;
+
+  return new Promise((resolve, reject) => {
+    db.query(sql, [_values], (err, result, fields) => {
+      if(err)
+        reject(err);
+      else
+        resolve(result);
     });
   });
 };
@@ -227,5 +247,6 @@ module.exports = {
   Create,
   Update,
   Delete,
+  BulkInsert,
   //ForceDelete,
 };

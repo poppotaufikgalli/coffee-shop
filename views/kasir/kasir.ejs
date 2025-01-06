@@ -36,6 +36,7 @@
 						</div>
 					</div>
 					<div class="d-flex justify-content-center">
+						<!--<button class="btn text-dark" style="background-color: #BA740B; border-radius: 10px;" id="submitPembayaran">ok bungkus</button>-->
 						<button class="btn text-dark" style="background-color: #BA740B; border-radius: 10px;" id="submitPembayaran">ok bungkus</button>
 					</div>
 				</div>
@@ -133,8 +134,57 @@
     	</div>
   	</div>
 </div>
-<script defer src="/js/script.js"></script>
-<script defer src="/js/face-api.min.js"></script>
+
+<div class="modal fade" id="strukModal" tabindex="-1" aria-labelledby="strukModalLabel" aria-hidden="true">
+  	<div class="modal-dialog">
+    	<div class="modal-content" style="border-radius: 38px">
+      		<div class="modal-body">
+      			<h1 class="modal-title text-center fs-3" id="strukModalLabel">Struk Pesanan</h1>
+        		<div class="card card-body m-4" style="border-radius: 38px">
+        			<div class="d-flex justify-content-between">
+        				<span>Nama Kasir : <%=user?.nama_karyawan%> </span>
+        				<span id="trx_time"></span>
+        			</div>
+        			<div>
+        				No. Transaksi: <span id="no_trx"></span>
+        			</div>
+        			<hr class="my-2">
+        			<div id="listPesananStruk"></div>
+        			<hr class="my-2">
+        			<div class="row">
+        				<label class="col-sm-4">Sub Total</label>
+        				<label class="col-sm-4">&nbsp;</label>
+        				<label class="col-sm-4" id="trx_subtotal"></label>
+        			</div>
+        			<div class="row">
+        				<label class="col-sm-4">Diskon</label>
+        				<label class="col-sm-4">&nbsp;</label>
+        				<label class="col-sm-4">(<%= pelanggan?.diskon %>%)</label>
+        			</div>
+        			<hr class="my-2">
+        			<div class="row">
+        				<label class="col-sm-4 fw-bold">Total</label>
+        				<label class="col-sm-4">&nbsp;</label>
+        				<label class="col-sm-4 fw-bold" id="trx_total"></label>
+        			</div>
+        			<hr class="my-2">
+        			<div>
+        				Program Loyalitas:
+        				<ul>
+        					<li><%= pelanggan?.keterangan%></li>
+        				</ul>
+        			</div>
+        		</div>
+        		<div class="d-flex justify-content-center gap-2 mx-4">
+					<button class="btn btn-lg text-dark" style="background-color: #BA740B; border-radius: 10px;">Tambah</button>
+					<button class="btn btn-lg text-dark" style="background-color: #F9C06A; border-radius: 10px;">Cetak</button>
+				</div>
+      		</div>
+    	</div>
+  	</div>
+</div>
+<!--<script defer src="/js/script.js"></script>
+<script defer src="/js/face-api.min.js"></script>-->
 <script type="text/javascript">
 	var menu = [];
 	var filterMenu = [];
@@ -186,19 +236,42 @@
 	                confirmButtonText: "Ya, simpan pesanan!"
 	            }).then((result) => {
 	                if (result.isConfirmed) {
-	                    //window.location.href = "/delete-karyawan/"+data.id    
+	                    
 	                    $.ajax({
 	                        url: "/api/pesanan/",
 	                        type: "POST",
 	                        data: {
+	                        	'id_pelanggan': '<%= id %>',
+	                        	'klasifikasi': '<%= pelanggan?.klasifikasi %>',
+	                        	'diskon': '<%= pelanggan?.diskon %>',
 	                        	'transaksi': groupPesanan(lsPesanan),
-	                        	'id_pelanggan': '<%= id %>'
+	                        	
 	                        },
 	                        success: function (d) {
 	                        	console.log(d)
-	                        	var text = JSON.parse(d)
-	                            Swal.fire("Done!","It was succesfully deleted!","success");
-	                            //table.ajax.reload();
+	                        	const {transaksi, insertId, dtTransaksi} = d
+	                        	//var text = JSON.parse(d)
+	                            //Swal.fire("Done!","It was succesfully deleted!","success");
+
+	                            const strukModal = new bootstrap.Modal('#strukModal', {})
+			                	strukModal.show()
+
+			                	var html = "";
+			                	var totalBayar = 0;
+			                	//var obj = groupPesanan(lsPesanan)
+			                	for (var i = 0; i < transaksi.length; i++) {
+						    		totalBayar = totalBayar + transaksi[i].total
+						    		html = html + `<div class="row">
+				        				<label class="col-sm-4">${transaksi[i].nama_produk}</label>
+				        				<label class="col-sm-4">${transaksi[i].jumlah}x</label>
+				        				<label class="col-sm-4">Rp. ${(transaksi[i].total).toLocaleString()}</label>
+				        			</div>`;
+								}
+								document.getElementById('no_trx').innerHTML = insertId
+								document.getElementById('trx_time').innerHTML = new Date(dtTransaksi.created_at).toLocaleString()
+								document.getElementById('listPesananStruk').innerHTML = html
+								document.getElementById('trx_subtotal').innerHTML = 'Rp. '+(dtTransaksi?.subtotal).toLocaleString()
+								document.getElementById('trx_total').innerHTML = 'Rp. '+(dtTransaksi?.total).toLocaleString()
 	                        }
 	                    });
 	                }
